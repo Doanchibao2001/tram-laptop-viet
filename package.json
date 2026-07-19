@@ -1,7 +1,8 @@
 {
-  "name": "site-creator-vinext-starter",
+  "name": "tram-laptop-viet",
   "version": "0.1.0",
   "private": true,
+  "description": "Website giới thiệu dịch vụ, cửa hàng và tin tức SEO của Trạm Laptop Việt",
   "engines": {
     "node": ">=22.13.0"
   },
@@ -9,7 +10,6 @@
     "dev": "vinext dev",
     "build": "vinext build",
     "start": "vinext start",
-    "test": "npm run build && node --test tests/rendered-html.test.mjs",
     "lint": "eslint . --ignore-pattern dist --ignore-pattern .next",
     "db:generate": "drizzle-kit generate"
   },

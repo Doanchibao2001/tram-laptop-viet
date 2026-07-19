@@ -1,79 +1,187 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 type Product = { name: string; price: string; category: string; image: string };
 
 const products: Product[] = [
-  { name: "Bàn phím laptop HP thay lấy liền", price: "290.000₫", category: "Bàn phím", image: "https://mrlaptop.vn/wp-content/uploads/2018/12/hinh-sua-laptop-uy-tin-hcm.jpg" },
-  { name: "Pin laptop Dell chính hãng", price: "390.000₫", category: "Pin laptop", image: "https://mrlaptop.vn/wp-content/uploads/2018/12/hinh-sua-laptop-uy-tin-chat-luong.jpg" },
-  { name: "Sạc laptop Dell bảo hành 12 tháng", price: "350.000₫", category: "Sạc laptop", image: "https://mrlaptop.vn/wp-content/uploads/2020/03/banner2.png" },
-  { name: "Màn hình laptop 15.6 inch Full HD", price: "1.450.000₫", category: "Màn hình", image: "https://mrlaptop.vn/wp-content/uploads/2020/03/banner3.png" },
-  { name: "Bàn phím Lenovo ThinkPad X1 Carbon", price: "810.000₫", category: "Bàn phím", image: "https://mrlaptop.vn/wp-content/uploads/2020/03/banner1.png" },
-  { name: "SSD laptop 512GB tốc độ cao", price: "890.000₫", category: "Linh kiện", image: "https://mrlaptop.vn/wp-content/uploads/2018/12/hinh-sua-laptop-uy-tin-hcm.jpg" },
-  { name: "Pin laptop Lenovo ThinkPad", price: "390.000₫", category: "Pin laptop", image: "https://mrlaptop.vn/wp-content/uploads/2018/12/hinh-sua-laptop-uy-tin-chat-luong.jpg" },
-  { name: "Quạt tản nhiệt laptop chính hãng", price: "Liên hệ", category: "Phụ kiện", image: "https://mrlaptop.vn/wp-content/uploads/2020/03/banner2.png" },
+  { name: "Bàn phím laptop HP thay lấy liền", price: "290.000₫", category: "Bàn phím", image: "/tram-laptop-viet/storefront-main.png" },
+  { name: "Pin laptop Dell chính hãng", price: "390.000₫", category: "Pin laptop", image: "/tram-laptop-viet/service-banner.jpg" },
+  { name: "Sạc laptop Dell bảo hành 12 tháng", price: "350.000₫", category: "Sạc laptop", image: "/tram-laptop-viet/brand-banner.jpg" },
+  { name: "Màn hình laptop 15.6 inch Full HD", price: "1.450.000₫", category: "Màn hình", image: "/tram-laptop-viet/storefront-main.png" },
+  { name: "Bàn phím Lenovo ThinkPad X1 Carbon", price: "810.000₫", category: "Bàn phím", image: "/tram-laptop-viet/service-banner.jpg" },
+  { name: "SSD laptop 512GB tốc độ cao", price: "890.000₫", category: "Linh kiện", image: "/tram-laptop-viet/brand-banner.jpg" },
+  { name: "Pin laptop Lenovo ThinkPad", price: "390.000₫", category: "Pin laptop", image: "/tram-laptop-viet/storefront-main.png" },
+  { name: "Quạt tản nhiệt laptop chính hãng", price: "Liên hệ", category: "Phụ kiện", image: "/tram-laptop-viet/service-banner.jpg" },
 ];
 
 const categories = ["Laptop cũ", "Bàn phím laptop", "Màn hình laptop", "Pin laptop", "Sạc laptop", "Ổ cứng & RAM", "Phụ kiện", "Sửa main laptop"];
+const hotline = "0343323865";
+const hotlineDisplay = "0343.323.865";
+const zaloUrl = `https://zalo.me/${hotline}`;
+
+const localBusinessSchema = {
+  "@context": "https://schema.org",
+  "@type": ["LocalBusiness", "ComputerStore"],
+  "@id": "https://tramlaptopviet.vn/#business",
+  name: "Trạm Laptop Việt",
+  url: "https://tramlaptopviet.vn/",
+  image: "https://tramlaptopviet.vn/tram-laptop-viet/storefront-main.png",
+  logo: "https://tramlaptopviet.vn/tram-laptop-viet/logo-round.jpg",
+  telephone: "+84343323865",
+  priceRange: "₫₫",
+  description: "Trạm Laptop Việt chuyên sửa chữa, nâng cấp và bảo hành laptop, MacBook tại TP.HCM.",
+  address: {
+    "@type": "PostalAddress",
+    streetAddress: "642 đường 3/2, Phường 14, Quận 10",
+    addressLocality: "TP. Hồ Chí Minh",
+    addressCountry: "VN",
+  },
+  areaServed: { "@type": "City", name: "TP. Hồ Chí Minh" },
+  openingHoursSpecification: [
+    { "@type": "OpeningHoursSpecification", dayOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"], opens: "08:30", closes: "18:30" },
+    { "@type": "OpeningHoursSpecification", dayOfWeek: "Sunday", opens: "09:00", closes: "17:00" },
+  ],
+  hasOfferCatalog: {
+    "@type": "OfferCatalog",
+    name: "Dịch vụ sửa chữa laptop",
+    itemListElement: ["Sửa laptop lấy liền", "Thay bàn phím laptop", "Thay màn hình laptop", "Thay pin và sạc laptop", "Sửa mainboard laptop"].map((name) => ({ "@type": "Offer", itemOffered: { "@type": "Service", name } })),
+  },
+};
+
+const faqSchema = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: [
+    { "@type": "Question", name: "Kiểm tra laptop có mất phí không?", acceptedAnswer: { "@type": "Answer", text: "Trạm Laptop Việt kiểm tra và tư vấn phương án trước khi sửa. Chi phí chỉ được thực hiện sau khi khách hàng đồng ý." } },
+    { "@type": "Question", name: "Sửa laptop mất bao lâu?", acceptedAnswer: { "@type": "Answer", text: "Các lỗi bàn phím, pin, sạc hoặc màn hình có sẵn linh kiện thường được xử lý lấy liền. Lỗi mainboard cần thời gian chẩn đoán cụ thể." } },
+    { "@type": "Question", name: "Dịch vụ sửa laptop có bảo hành không?", acceptedAnswer: { "@type": "Answer", text: "Có. Thời gian bảo hành phụ thuộc dịch vụ và linh kiện, được ghi rõ trên phiếu bàn giao." } },
+  ],
+};
 
 export default function Home() {
   const [query, setQuery] = useState("");
-  const [cart, setCart] = useState(0);
   const [menuOpen, setMenuOpen] = useState(false);
   const [sent, setSent] = useState(false);
+  const [popupOpen, setPopupOpen] = useState(false);
+  const [zaloExpanded, setZaloExpanded] = useState(false);
   const visible = useMemo(() => products.filter((p) => p.name.toLowerCase().includes(query.toLowerCase())), [query]);
+
+  useEffect(() => {
+    const popupSeenKey = "tram-laptop-viet-conversion-popup-v2";
+    let autoPopupTriggered = window.sessionStorage.getItem(popupSeenKey) === "1";
+    let collapseTimer = 0;
+    let zaloInterval = 0;
+
+    const triggerAutoPopup = () => {
+      if (autoPopupTriggered) return;
+      autoPopupTriggered = true;
+      window.sessionStorage.setItem(popupSeenKey, "1");
+      setPopupOpen(true);
+    };
+
+    const popupTimer = window.setTimeout(triggerAutoPopup, 18000);
+    const handleScroll = () => {
+      const scrollable = document.documentElement.scrollHeight - window.innerHeight;
+      if (scrollable > 0 && window.scrollY / scrollable >= 0.55) triggerAutoPopup();
+    };
+
+    const expandZalo = () => {
+      if (!window.matchMedia("(max-width: 700px)").matches) return;
+      setZaloExpanded(true);
+      window.clearTimeout(collapseTimer);
+      collapseTimer = window.setTimeout(() => setZaloExpanded(false), 3000);
+    };
+    const firstZaloExpansion = window.setTimeout(() => {
+      expandZalo();
+      zaloInterval = window.setInterval(expandZalo, 14000);
+    }, 6500);
+
+    const handleEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setPopupOpen(false);
+    };
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    window.addEventListener("keydown", handleEscape);
+    return () => {
+      window.clearTimeout(popupTimer);
+      window.clearTimeout(firstZaloExpansion);
+      window.clearTimeout(collapseTimer);
+      window.clearInterval(zaloInterval);
+      window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("keydown", handleEscape);
+    };
+  }, []);
+
+  const closePopup = () => {
+    setPopupOpen(false);
+    window.sessionStorage.setItem("tram-laptop-viet-conversion-popup-v2", "1");
+  };
 
   return (
     <main>
-      <div className="topbar"><div className="container topbar-inner"><span>Hệ thống sửa chữa laptop uy tín tại TP.HCM</span><a href="tel:0931640640">Hotline: <b>0931.640.640</b></a></div></div>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(localBusinessSchema).replace(/</g, "\\u003c") }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema).replace(/</g, "\\u003c") }} />
+      <div className="topbar"><div className="container topbar-inner"><span>Trạm Laptop Việt · Sửa chữa · Nâng cấp · Bảo hành</span><a href={`tel:${hotline}`}>Hotline: <b>{hotlineDisplay}</b></a></div></div>
       <header className="header">
         <div className="container header-main">
-          <a className="logo" href="#top" aria-label="MrLaptop trang chủ"><span className="logo-mark">MR</span><span><b>LAPTOP</b><small>.VN</small></span></a>
-          <div className="promise"><span className="promise-icon">⚡</span><span><b>Sửa laptop lấy liền</b><small>Nhanh chóng · Uy tín</small></span></div>
-          <div className="promise"><span className="promise-icon">✓</span><span><b>Tư vấn báo giá miễn phí</b><small>Quan sát sửa trực tiếp</small></span></div>
-          <button className="cart" onClick={() => setCart(0)} aria-label={`Giỏ hàng có ${cart} sản phẩm`}>🛒 <span>Giỏ hàng</span><b>{cart}</b></button>
+          <a className="logo tram-brand" href="#top" aria-label="Trạm Laptop Việt trang chủ"><img className="tram-logo" src="/tram-laptop-viet/logo-round.jpg" alt="Logo Trạm Laptop Việt" /><span className="tram-wordmark"><b>TRẠM LAPTOP</b><strong>VIỆT</strong></span></a>
+          <div className="desktop-benefits" aria-label="Cam kết dịch vụ">
+            <span><b>⚙</b>Sửa chữa chuyên nghiệp</span>
+            <span><b>◆</b>Linh kiện chính hãng</span>
+            <span><b>↻</b>Bảo hành 1 đổi 1</span>
+          </div>
+          <a className="mobile-header-call" href={`tel:${hotline}`} aria-label={`Gọi Trạm Laptop Việt ${hotlineDisplay}`}><i className="ui-icon icon-phone" aria-hidden="true"/><span>Gọi ngay</span></a>
+          <button className="header-consult" onClick={() => setPopupOpen(true)}><i className="ui-icon icon-calendar" aria-hidden="true"/><span>Kiểm tra miễn phí</span></button>
         </div>
         <nav className="nav" id="top">
           <div className="container nav-inner">
-            <button className="menu-button" onClick={() => setMenuOpen(!menuOpen)} aria-expanded={menuOpen}>☰ Danh mục sản phẩm</button>
+            <button className="menu-button" onClick={() => setMenuOpen(!menuOpen)} aria-expanded={menuOpen}><i className="ui-icon icon-menu" aria-hidden="true"/><span>Danh mục sản phẩm</span></button>
             <div className={`nav-links ${menuOpen ? "open" : ""}`}>
-              <a href="#dich-vu">Dịch vụ</a><a href="#san-pham">Sản phẩm</a><a href="#quy-trinh">Quy trình sửa chữa</a><a href="#cua-hang">Hệ thống cửa hàng</a><a href="#lien-he">Liên hệ</a>
+              <a href="#dich-vu">Dịch vụ</a><a href="#san-pham">Sản phẩm</a><a href="#quy-trinh">Quy trình sửa chữa</a><a href="#cua-hang">Hệ thống cửa hàng</a><a href="#lien-he">Liên hệ</a><a href="/tin-tuc">Tin tức</a>
             </div>
           </div>
         </nav>
       </header>
 
+      <div className="instant-cta"><div className="container instant-cta-inner"><strong>Sợ phát sinh chi phí?</strong><span>Chỉ sửa sau khi báo đúng lỗi, rõ giá và bạn đồng ý.</span><div><a href={`tel:${hotline}`}>Gọi {hotlineDisplay}</a><button onClick={() => setPopupOpen(true)}>Kiểm tra lỗi miễn phí</button></div></div></div>
+
       <section className="hero">
         <div className="container hero-grid">
           <aside className="category-panel"><h3>Danh mục sản phẩm</h3>{categories.map((item) => <a href="#san-pham" key={item}><span>{item}</span><b>›</b></a>)}</aside>
           <div className="hero-card">
-            <div className="hero-copy"><span className="eyebrow">MRLAPTOP.VN · TỪ 2012</span><h1>Sửa laptop<br/><em>lấy liền</em> tại TP.HCM</h1><p>Kiểm tra miễn phí, báo đúng giá, sửa trực tiếp trước mặt khách hàng và bảo hành minh bạch.</p><div className="hero-actions"><a className="btn primary" href="tel:0931640640">Gọi 0931.640.640</a><a className="btn secondary" href="#cua-hang">Tìm cửa hàng gần bạn</a></div></div>
-            <div className="laptop-visual" aria-hidden="true"><div className="screen"><span>MR</span><small>Chẩn đoán nhanh<br/>Sửa chữa tận tâm</small></div><div className="base"/></div>
-            <div className="hero-badge"><b>10+</b><span>chi nhánh<br/>TP.HCM</span></div>
+            <div className="hero-copy"><span className="eyebrow">TRẠM LAPTOP VIỆT</span><h1><span>Sửa Laptop & MacBook</span><em>Đúng lỗi · Đúng giá</em></h1><p>Máy không lên nguồn, chạy chậm, nóng hoặc vào nước? Kiểm tra miễn phí, báo rõ chi phí và chỉ sửa khi bạn đồng ý.</p><div className="hero-actions"><button className="btn primary hero-call" onClick={() => setPopupOpen(true)}><i className="ui-icon icon-calendar" aria-hidden="true"/><b>Kiểm tra lỗi miễn phí</b></button><a className="btn secondary" href={zaloUrl} target="_blank" rel="noreferrer"><i className="ui-icon icon-zalo" aria-hidden="true"/>Gửi ảnh lỗi qua Zalo</a></div><div className="hero-risk-reversal"><span>✓ Không tự ý sửa</span><span>✓ Báo giá trước khi làm</span></div><div className="hero-social-proof" aria-label="Hơn 3.000 khách hàng tại Thành phố Hồ Chí Minh đã tin tưởng giao máy"><strong>+3.000</strong><span>khách hàng tại TP.HCM<br/>đã tin tưởng giao máy</span></div><a className="nearby-link" href={`tel:${hotline}`}>Máy cần gấp? Gọi kỹ thuật viên {hotlineDisplay} →</a></div>
+            <img className="hero-photo" src="/tram-laptop-viet/storefront-main.png" alt="Cửa hàng Trạm Laptop Việt tại 656 Phạm Văn Chiêu, Gò Vấp" />
+            <div className="hero-badge"><b>100%</b><span>báo giá<br/>trước khi sửa</span></div>
           </div>
-          <div className="side-promos"><article><span>MIỄN PHÍ</span><b>Kiểm tra & vệ sinh máy</b><small>Khi sử dụng dịch vụ sửa chữa</small></article><article className="dark"><span>BẢO HÀNH</span><b>Lên đến 12 tháng</b><small>Linh kiện rõ nguồn gốc</small></article></div>
+          <div className="side-promos"><article><span>KHÔNG PHÁT SINH</span><b>Chỉ sửa khi khách đồng ý</b><small>Giải thích rõ lỗi và phương án trước khi làm</small></article><article className="dark"><span>BẢO HÀNH RÕ RÀNG</span><b>Ghi cụ thể trên phiếu</b><small>Dễ kiểm tra, dễ đối chiếu sau sửa chữa</small></article></div>
         </div>
       </section>
 
-      <section className="trust-strip"><div className="container trust-grid"><div><b>⚡ Sửa lấy liền</b><span>Quan sát trực tiếp</span></div><div><b>◆ Linh kiện chuẩn</b><span>Bảo hành rõ ràng</span></div><div><b>↻ Đổi trả miễn phí</b><span>Trong vòng 7 ngày</span></div><div><b>☎ Hỗ trợ miễn phí</b><span>0931.640.640</span></div></div></section>
+      <section className="brand-showcase" aria-label="Giới thiệu Trạm Laptop Việt"><div className="container"><img src="/tram-laptop-viet/brand-banner.jpg" alt="Trạm Laptop Việt - Sửa chữa, nâng cấp, bảo hành laptop" /></div></section>
+
+      <section className="trust-strip"><div className="container trust-grid"><div><b>✓ Không tự ý sửa</b><span>Chỉ làm khi khách đồng ý</span></div><div><b>✓ Báo đúng lỗi</b><span>Giải thích rõ phương án</span></div><div><b>✓ Linh kiện rõ ràng</b><span>Bảo hành ghi cụ thể</span></div><div><b>☎ Máy cần xử lý gấp?</b><span>{hotlineDisplay}</span></div></div></section>
 
       <section className="section services" id="dich-vu"><div className="container"><div className="section-heading"><span>DỊCH VỤ NỔI BẬT</span><h2>Laptop gặp vấn đề gì?</h2><p>Kỹ thuật viên kiểm tra và báo phương án trước khi sửa.</p></div><div className="service-grid">
-        {[ ["01","Thay bàn phím","Thay lấy liền từ 15–30 phút, bảo hành đến 12 tháng."], ["02","Thay màn hình","Kiểm tra miễn phí, nhiều lựa chọn màn hình phù hợp."], ["03","Thay pin · sạc","Linh kiện tương thích, kiểm tra dung lượng và nguồn."], ["04","Sửa mainboard","Chẩn đoán chuyên sâu, báo đúng lỗi, không tráo linh kiện."] ].map(([n,t,d]) => <article key={n}><span>{n}</span><h3>{t}</h3><p>{d}</p><a href="#lien-he">Nhận tư vấn →</a></article>)}
+        {[ ["01","Thay bàn phím","Thay lấy liền từ 15–30 phút, bảo hành đến 12 tháng."], ["02","Thay màn hình","Kiểm tra miễn phí, nhiều lựa chọn màn hình phù hợp."], ["03","Thay pin · sạc","Linh kiện tương thích, kiểm tra dung lượng và nguồn."], ["04","Sửa mainboard","Chẩn đoán chuyên sâu, báo đúng lỗi, không tráo linh kiện."] ].map(([n,t,d]) => <article key={n}><span>{n}</span><h3>{t}</h3><p>{d}</p><button className="service-check" onClick={() => setPopupOpen(true)}>Kiểm tra lỗi này →</button></article>)}
       </div></div></section>
 
-      <section className="section products" id="san-pham"><div className="container"><div className="product-head"><div className="section-heading left"><span>SẢN PHẨM BÁN CHẠY</span><h2>Linh kiện laptop</h2></div><label className="search"><span>⌕</span><input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Tìm bàn phím, pin, sạc..." aria-label="Tìm sản phẩm"/></label></div><div className="product-grid">{visible.map((p, i) => <article className="product-card" key={p.name}><div className="product-image"><img src={p.image} alt=""/><span>{i < 3 ? "BÁN CHẠY" : "CHÍNH HÃNG"}</span></div><small>{p.category}</small><h3>{p.name}</h3><div className="price-row"><b>{p.price}</b><button onClick={() => setCart(cart + 1)} aria-label={`Thêm ${p.name} vào giỏ`}>＋</button></div></article>)}</div>{visible.length === 0 && <p className="empty">Không tìm thấy sản phẩm phù hợp. Gọi 0931.640.640 để được tra mã linh kiện.</p>}</div></section>
+      <section className="section products" id="san-pham"><div className="container"><div className="product-head"><div className="section-heading left"><span>LINH KIỆN PHỔ BIẾN</span><h2>Kiểm tra đúng mã trước khi thay</h2></div><label className="search"><span>⌕</span><input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Tìm bàn phím, pin, sạc..." aria-label="Tìm sản phẩm"/></label></div><div className="product-grid">{visible.map((p, i) => <article className="product-card" key={p.name}><div className="product-image"><img src={p.image} alt={p.name}/><span>{i < 3 ? "PHỔ BIẾN" : "CÓ BẢO HÀNH"}</span></div><small>{p.category}</small><h3>{p.name}</h3><div className="price-row"><b>{p.price}</b><button onClick={() => setPopupOpen(true)} aria-label={`Hỏi giá ${p.name}`}>Hỏi giá</button></div></article>)}</div>{visible.length === 0 && <p className="empty">Không tìm thấy sản phẩm phù hợp. Gọi {hotlineDisplay} để được tra đúng mã linh kiện.</p>}</div></section>
 
       <section className="section process" id="quy-trinh"><div className="container process-grid"><div><div className="section-heading left light"><span>MINH BẠCH TỪNG BƯỚC</span><h2>Quy trình sửa chữa 4 bước</h2><p>Khách hàng nắm rõ tình trạng máy, chi phí và thời gian trước khi quyết định.</p></div><a href="#lien-he" className="btn white">Đặt lịch kiểm tra miễn phí</a></div><ol><li><b>01</b><span><strong>Tiếp nhận & kiểm tra</strong><small>Kỹ thuật viên lắng nghe, kiểm tra tổng thể.</small></span></li><li><b>02</b><span><strong>Báo lỗi & báo giá</strong><small>Tư vấn phương án, không phát sinh ngoài báo giá.</small></span></li><li><b>03</b><span><strong>Sửa chữa trực tiếp</strong><small>Khách hàng có thể ngồi quan sát tại chỗ.</small></span></li><li><b>04</b><span><strong>Kiểm tra & bảo hành</strong><small>Test kỹ, bàn giao và ghi rõ thời hạn bảo hành.</small></span></li></ol></div></section>
 
       <section className="section locations" id="cua-hang"><div className="container"><div className="section-heading"><span>PHỤC VỤ KHẮP THÀNH PHỐ</span><h2>Hệ thống cửa hàng</h2><p>Chọn điểm gần nhất để được kiểm tra máy miễn phí.</p></div><div className="location-grid">{[
-        ["Quận 10","642 đường 3/2, Phường 14","0931.640.640"], ["Quận 3","514 Cách Mạng Tháng 8, P.11","0968.450.450"], ["Phú Nhuận","167A Đào Duy Anh, P.9","0931.590.590"], ["Bình Thạnh","203A Lê Quang Định, P.7","0934.032.032"], ["Gò Vấp","457 Lê Văn Thọ, P.9","0966.430.430"], ["Thủ Đức","678 Kha Vạn Cân, Linh Đông","0962.710.710"]
+        ["Quận 10","642 đường 3/2, Phường 14",hotlineDisplay], ["Quận 3","514 Cách Mạng Tháng 8, P.11",hotlineDisplay], ["Phú Nhuận","167A Đào Duy Anh, P.9",hotlineDisplay], ["Bình Thạnh","203A Lê Quang Định, P.7",hotlineDisplay], ["Gò Vấp","457 Lê Văn Thọ, P.9",hotlineDisplay], ["Thủ Đức","678 Kha Vạn Cân, Linh Đông",hotlineDisplay]
       ].map(([district,address,phone]) => <article key={district}><span>● ĐANG MỞ CỬA</span><h3>{district}</h3><p>{address}</p><small>Thứ 2–7 · 8:30–18:30</small><a href={`tel:${phone.replaceAll(".","")}`}>{phone} →</a></article>)}</div></div></section>
 
-      <section className="consult" id="lien-he"><div className="container consult-grid"><div><span>TƯ VẤN MIỄN PHÍ</span><h2>Mô tả tình trạng máy,<br/>MrLaptop gọi lại ngay.</h2><p>Hoặc gọi hotline <a href="tel:0931640640">0931.640.640</a> để được hỗ trợ nhanh.</p></div><form onSubmit={(e) => { e.preventDefault(); setSent(true); }}><input required placeholder="Họ và tên" aria-label="Họ và tên"/><input required type="tel" placeholder="Số điện thoại" aria-label="Số điện thoại"/><select aria-label="Dịch vụ cần tư vấn"><option>Dịch vụ cần tư vấn</option><option>Sửa laptop</option><option>Thay bàn phím</option><option>Thay màn hình</option><option>Thay pin · sạc</option></select><button className="btn primary" type="submit">{sent ? "Đã tiếp nhận yêu cầu ✓" : "Yêu cầu gọi lại"}</button></form></div></section>
+      <section className="section seo-section" aria-labelledby="seo-title"><div className="container seo-grid"><article><span className="seo-kicker">TRẠM LAPTOP VIỆT · KIỂM TRA ĐÚNG LỖI</span><h2 id="seo-title">Sửa laptop, MacBook tại TP.HCM</h2><p>Trạm Laptop Việt tiếp nhận kiểm tra, vệ sinh, sửa chữa và nâng cấp laptop tại TP.HCM. Kỹ thuật viên chẩn đoán đúng lỗi, báo giá trước khi làm và để khách hàng nắm rõ phương án sửa chữa.</p><p>Các dịch vụ phổ biến gồm thay bàn phím laptop, thay màn hình, pin, sạc, ổ cứng SSD, RAM và sửa mainboard. Linh kiện có nguồn gốc rõ ràng, thời hạn bảo hành được ghi cụ thể khi bàn giao máy.</p><a className="text-link" href="#cua-hang">Xem cửa hàng gần bạn →</a></article><div className="faq-block"><h2>Câu hỏi thường gặp</h2><details><summary>Kiểm tra laptop có mất phí không?</summary><p>Trạm Laptop Việt kiểm tra và tư vấn phương án trước khi sửa. Chi phí chỉ được thực hiện sau khi khách hàng đồng ý.</p></details><details><summary>Sửa laptop mất bao lâu?</summary><p>Các lỗi bàn phím, pin, sạc hoặc màn hình có sẵn linh kiện thường được xử lý lấy liền. Lỗi mainboard cần thời gian chẩn đoán cụ thể.</p></details><details><summary>Dịch vụ có bảo hành không?</summary><p>Có. Thời gian bảo hành phụ thuộc dịch vụ và linh kiện, được ghi rõ trên phiếu bàn giao.</p></details></div></div></section>
 
-      <footer><div className="container footer-grid"><div><a className="logo footer-logo" href="#top"><span className="logo-mark">MR</span><span><b>LAPTOP</b><small>.VN</small></span></a><p>Hệ thống sửa chữa laptop chuyên nghiệp, nhanh chóng và minh bạch tại TP.HCM.</p></div><div><h4>Dịch vụ</h4><a href="#dich-vu">Sửa laptop lấy liền</a><a href="#san-pham">Linh kiện laptop</a><a href="#quy-trinh">Chính sách bảo hành</a></div><div><h4>Hỗ trợ</h4><a href="tel:0931640640">0931.640.640</a><a href="#cua-hang">Hệ thống cửa hàng</a><a href="#lien-he">Đăng ký tư vấn</a></div><div><h4>Giờ làm việc</h4><p>Thứ 2–7: 8:30–18:30<br/>Chủ nhật: 9:00–17:00</p></div></div><div className="copyright container">© 2012–2026 MrLaptop.vn · Thiết kế phục vụ trải nghiệm khách hàng.</div></footer>
-      <a className="floating-call" href="tel:0931640640" aria-label="Gọi hotline">☎<span>Gọi ngay</span></a>
+      <section className="consult" id="lien-he"><div className="container consult-grid"><div><span>TƯ VẤN MIỄN PHÍ</span><h2>Mô tả tình trạng máy,<br/>Trạm Laptop Việt gọi lại ngay.</h2><p>Hoặc gọi hotline <a href={`tel:${hotline}`}>{hotlineDisplay}</a> để được hỗ trợ nhanh.</p></div><form onSubmit={(e) => { e.preventDefault(); setSent(true); }}><input required placeholder="Họ và tên" aria-label="Họ và tên"/><input required type="tel" placeholder="Số điện thoại" aria-label="Số điện thoại"/><select aria-label="Dịch vụ cần tư vấn"><option>Dịch vụ cần tư vấn</option><option>Sửa laptop</option><option>Thay bàn phím</option><option>Thay màn hình</option><option>Thay pin · sạc</option></select><button className="btn primary" type="submit">{sent ? "Đã tiếp nhận yêu cầu ✓" : "Yêu cầu gọi lại"}</button></form></div></section>
+
+      <footer><div className="container footer-grid"><div><a className="logo footer-logo tram-brand" href="#top"><img className="tram-logo" src="/tram-laptop-viet/logo-round.jpg" alt="Logo Trạm Laptop Việt" /><span className="tram-wordmark"><b>TRẠM LAPTOP</b><strong>VIỆT</strong></span></a><p>Trạm sửa chữa, nâng cấp và bảo hành laptop chuyên nghiệp tại TP.HCM.</p></div><div><h4>Dịch vụ</h4><a href="#dich-vu">Sửa laptop lấy liền</a><a href="#san-pham">Linh kiện laptop</a><a href="#quy-trinh">Chính sách bảo hành</a></div><div><h4>Hỗ trợ</h4><a href={`tel:${hotline}`}>{hotlineDisplay}</a><a href="#cua-hang">Hệ thống cửa hàng</a><a href="#lien-he">Đăng ký tư vấn</a></div><div><h4>Giờ làm việc</h4><p>Thứ 2–7: 8:30–18:30<br/>Chủ nhật: 9:00–17:00</p></div></div><div className="copyright container">© 2026 Trạm Laptop Việt · Sửa chữa · Nâng cấp · Bảo hành.</div></footer>
+      {popupOpen && <div className="popup-backdrop" onMouseDown={(event) => { if (event.target === event.currentTarget) closePopup(); }}><section className="consult-popup" role="dialog" aria-modal="true" aria-labelledby="popup-title"><button className="popup-close" onClick={closePopup} aria-label="Đóng cửa sổ tư vấn">×</button><div className="popup-accent">CHƯA ĐỒNG Ý GIÁ · CHƯA TIẾN HÀNH SỬA</div><h2 id="popup-title">Chưa biết máy hỏng gì?</h2><p>Gửi ảnh, video hoặc mô tả dấu hiệu để kỹ thuật viên xem sơ bộ. Bạn biết lỗi và chi phí dự kiến trước khi quyết định.</p><div className="popup-quick-actions"><a className="popup-zalo-action" href={zaloUrl} target="_blank" rel="noreferrer"><i className="ui-icon icon-zalo" aria-hidden="true"/><span><b>Gửi ảnh lỗi để kiểm tra nhanh</b><small>Kỹ thuật viên đang online</small></span></a><a className="popup-phone-action" href={`tel:${hotline}`}><i className="ui-icon icon-phone" aria-hidden="true"/><span><b>Máy cần gấp? Gọi ngay</b><small>{hotlineDisplay}</small></span></a></div><ul><li>✓ Giải thích rõ lỗi và phương án</li><li>✓ Báo giá trước khi tiến hành</li><li>✓ Không tự ý thay linh kiện</li></ul><p className="popup-reassurance">Chỉ sửa khi bạn đã đồng ý giá.</p><div className="popup-divider"><span>Hoặc nhờ kỹ thuật viên gọi lại</span></div><form onSubmit={(event) => { event.preventDefault(); setSent(true); window.sessionStorage.setItem("tram-laptop-viet-conversion-popup-v2", "1"); }}><label><span>Số điện thoại của bạn</span><input type="tel" inputMode="tel" required placeholder="Nhập số để kỹ thuật viên gọi lại"/></label><label><span>Máy đang gặp tình trạng nào?</span><select defaultValue=""><option value="" disabled>Chọn dấu hiệu gần đúng nhất</option><option>Máy không lên nguồn</option><option>Bàn phím hoặc màn hình</option><option>Pin hoặc sạc</option><option>Máy chậm, nóng</option><option>Lỗi khác</option></select></label><button type="submit">{sent ? "Đã nhận yêu cầu — kỹ thuật viên sẽ gọi lại ✓" : "Nhờ kỹ thuật viên gọi lại miễn phí"}</button></form><small>Không thu phí tư vấn và không tự ý tiến hành sửa chữa.</small></section></div>}
+      <a className="floating-zalo" href={zaloUrl} target="_blank" rel="noreferrer" aria-label={`Chat Zalo ${hotline}`}><i className="ui-icon icon-zalo" aria-hidden="true"/><span>Chat Zalo</span></a>
+      <a className="floating-call" href={`tel:${hotline}`} aria-label={`Gọi ${hotline}`}><i className="ui-icon icon-phone" aria-hidden="true"/><span>Gọi ngay</span></a>
+      <nav className="mobile-cta" aria-label="Liên hệ nhanh"><a href={`tel:${hotline}`}><i className="ui-icon icon-phone" aria-hidden="true"/><span>Máy cần gấp</span></a><a className={`mobile-zalo-cta ${zaloExpanded ? "expanded" : ""}`} href={zaloUrl} target="_blank" rel="noreferrer" aria-label="Gửi ảnh lỗi qua Zalo"><span className="zalo-online"><i/>Kỹ thuật viên online</span><i className="ui-icon icon-zalo" aria-hidden="true"/><span className="zalo-expand-label"><b>Gửi ảnh lỗi</b><small>kiểm tra nhanh</small></span></a><button onClick={() => setPopupOpen(true)}><i className="ui-icon icon-calendar" aria-hidden="true"/><span>Kiểm tra miễn phí</span></button></nav>
     </main>
   );
 }
