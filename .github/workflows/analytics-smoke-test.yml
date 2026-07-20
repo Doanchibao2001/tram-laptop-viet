@@ -1,0 +1,55 @@
+name: Analytics Smoke Test
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/analytics-smoke-test.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Send test event
+        id: smoke
+        shell: bash
+        run: |
+          set -euo pipefail
+          SESSION_ID="github-smoke-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}"
+          PAYLOAD=$(cat <<JSON
+          {"eventName":"page_view","path":"/analytics-smoke-test","title":"GitHub analytics smoke test","label":"automated smoke test","target":"/bao-cao-web","sessionId":"${SESSION_ID}","viewportWidth":1440,"language":"vi-VN"}
+          JSON
+          )
+
+          HTTP_CODE=$(curl --silent --show-error --output /tmp/analytics-response.json --write-out '%{http_code}' \
+            --request POST 'https://tramlaptopviet.vn/api/analytics/event' \
+            --header 'content-type: application/json' \
+            --header 'origin: https://tramlaptopviet.vn' \
+            --data "$PAYLOAD")
+
+          RESPONSE=$(cat /tmp/analytics-response.json)
+          printf '{\n  "testedAt": "%s",\n  "httpCode": %s,\n  "sessionId": "%s",\n  "response": %s\n}\n' \
+            "$(date -u +%Y-%m-%dT%H:%M:%SZ)" "$HTTP_CODE" "$SESSION_ID" "$RESPONSE" \
+            > .github/analytics-smoke-test-result.json
+
+          test "$HTTP_CODE" = "201"
+          grep -q '"stored":true' /tmp/analytics-response.json
+
+      - name: Save test result
+        if: always()
+        shell: bash
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add .github/analytics-smoke-test-result.json
+          git commit -m 'Record analytics smoke test result' || exit 0
+          git push
