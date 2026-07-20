@@ -1,28 +1,37 @@
 import type { MetadataRoute } from "next";
 import { getNewsArticles } from "@/sanity/lib/content";
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://tramlaptopviet.vn";
+const siteUrl = (
+  process.env.NEXT_PUBLIC_SITE_URL ?? "https://tramlaptopviet.vn"
+).replace(/\/+$/, "");
+
+function validDate(value: string): Date | undefined {
+  const parsed = new Date(`${value}T08:00:00+07:00`);
+  return Number.isNaN(parsed.getTime()) ? undefined : parsed;
+}
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const newsArticles = await getNewsArticles();
+  const indexableArticles = newsArticles.filter((article) => !article.seoNoIndex);
+  const newestArticleDate = indexableArticles
+    .map((article) => validDate(article.updatedAt))
+    .filter((date): date is Date => Boolean(date))
+    .sort((a, b) => b.getTime() - a.getTime())[0];
+
   return [
     {
       url: `${siteUrl}/`,
-      lastModified: new Date("2026-07-19T00:00:00+07:00"),
-      changeFrequency: "weekly",
-      priority: 1,
+      ...(newestArticleDate ? { lastModified: newestArticleDate } : {}),
     },
     {
       url: `${siteUrl}/tin-tuc`,
-      lastModified: new Date("2026-07-19T00:00:00+07:00"),
-      changeFrequency: "weekly",
-      priority: 0.8,
+      ...(newestArticleDate ? { lastModified: newestArticleDate } : {}),
     },
-    ...newsArticles.filter((article) => !article.seoNoIndex).map((article) => ({
+    ...indexableArticles.map((article) => ({
       url: `${siteUrl}/tin-tuc/${article.slug}`,
-      lastModified: new Date(`${article.updatedAt}T08:00:00+07:00`),
-      changeFrequency: "monthly" as const,
-      priority: 0.7,
+      ...(validDate(article.updatedAt)
+        ? { lastModified: validDate(article.updatedAt) }
+        : {}),
     })),
   ];
 }
