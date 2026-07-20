@@ -1,3 +1,5 @@
+import type { PortableTextBlock } from "next-sanity";
+
 export type NewsSection = {
   id: string;
   heading: string;
@@ -13,11 +15,18 @@ export type NewsArticle = {
   publishedAt: string;
   publishedLabel: string;
   updatedAt: string;
+  authorName?: string;
   readTime: string;
   image: string;
   imageAlt: string;
   keywords: string[];
+  seoTitle?: string;
+  seoDescription?: string;
+  seoImage?: string;
+  seoImageAlt?: string;
+  seoNoIndex?: boolean;
   sections: NewsSection[];
+  body?: PortableTextBlock[];
 };
 
 export const newsArticles: NewsArticle[] = [
@@ -29,6 +38,8 @@ export const newsArticles: NewsArticle[] = [
     publishedAt: "2026-07-19",
     publishedLabel: "19/07/2026",
     updatedAt: "2026-07-19",
+    authorName: "Trạm Laptop Việt",
+    seoNoIndex: false,
     readTime: "6 phút đọc",
     image: "/tram-laptop-viet/storefront-main.png",
     imageAlt: "Cửa hàng Trạm Laptop Việt sửa laptop không lên nguồn",
@@ -84,6 +95,8 @@ export const newsArticles: NewsArticle[] = [
     publishedAt: "2026-07-18",
     publishedLabel: "18/07/2026",
     updatedAt: "2026-07-19",
+    authorName: "Trạm Laptop Việt",
+    seoNoIndex: false,
     readTime: "7 phút đọc",
     image: "/tram-laptop-viet/service-banner.jpg",
     imageAlt: "Dịch vụ nâng cấp SSD và RAM cho laptop tại Trạm Laptop Việt",
@@ -136,6 +149,8 @@ export const newsArticles: NewsArticle[] = [
     publishedAt: "2026-07-17",
     publishedLabel: "17/07/2026",
     updatedAt: "2026-07-19",
+    authorName: "Trạm Laptop Việt",
+    seoNoIndex: false,
     readTime: "5 phút đọc",
     image: "/tram-laptop-viet/brand-banner.jpg",
     imageAlt: "Hướng dẫn bảo quản và thay pin laptop tại Trạm Laptop Việt",

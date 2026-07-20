@@ -1,9 +1,10 @@
 import type { MetadataRoute } from "next";
-import { newsArticles } from "./tin-tuc/news-data";
+import { getNewsArticles } from "@/sanity/lib/content";
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://tramlaptopviet.vn";
 
-export default function sitemap(): MetadataRoute.Sitemap {
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  const newsArticles = await getNewsArticles();
   return [
     {
       url: `${siteUrl}/`,
@@ -17,12 +18,16 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "weekly",
       priority: 0.8,
     },
-    ...newsArticles.map((article) => ({
+    ...newsArticles.filter((article) => !article.seoNoIndex).map((article) => ({
       url: `${siteUrl}/tin-tuc/${article.slug}`,
       lastModified: new Date(`${article.updatedAt}T08:00:00+07:00`),
       changeFrequency: "monthly" as const,
       priority: 0.7,
-      images: [`${siteUrl}${article.image}`],
+      images: [
+        article.image.startsWith("http")
+          ? article.image
+          : `${siteUrl}${article.image}`,
+      ],
     })),
   ];
 }

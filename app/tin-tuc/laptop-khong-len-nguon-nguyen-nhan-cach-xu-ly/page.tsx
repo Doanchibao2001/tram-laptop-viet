@@ -1,6 +1,5 @@
-import { createArticleMetadata, NewsArticlePage } from "../NewsArticlePage";
-import { getNewsArticle } from "../news-data";
+import { metadataForArticle, renderArticle } from "../NewsArticleRoute";
 
-const article = getNewsArticle("laptop-khong-len-nguon-nguyen-nhan-cach-xu-ly")!;
-export const metadata = createArticleMetadata(article);
-export default function Page() { return <NewsArticlePage article={article} />; }
+const slug = "laptop-khong-len-nguon-nguyen-nhan-cach-xu-ly";
+export function generateMetadata() { return metadataForArticle(slug); }
+export default async function Page() { return renderArticle(slug); }

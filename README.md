@@ -59,10 +59,20 @@ Sao chép `.env.example` thành `.env.local` rồi sửa:
 ```env
 NEXT_PUBLIC_SITE_URL=https://ten-mien-cua-ban.vn
 GOOGLE_SITE_VERIFICATION=ma-xac-minh-google-search-console
+NEXT_PUBLIC_SANITY_PROJECT_ID=qnykgwoz
+NEXT_PUBLIC_SANITY_DATASET=production
+NEXT_PUBLIC_SANITY_API_VERSION=2026-07-20
 ```
 
 - `NEXT_PUBLIC_SITE_URL`: tên miền chính thức, dùng để tạo canonical URL, sitemap và dữ liệu có cấu trúc.
 - `GOOGLE_SITE_VERIFICATION`: mã xác minh của Google Search Console; có thể để trống khi chạy local.
+- Các biến `NEXT_PUBLIC_SANITY_*`: kết nối website với dataset đã xuất bản trong Sanity. Đây là thông tin công khai, không phải token bí mật.
+
+## Quản trị nội dung bằng Sanity
+
+Website đọc sản phẩm, bài viết, SEO, hình ảnh, địa chỉ, hotline, hero và popup từ Sanity rồi tự làm mới sau khoảng 60 giây. Dữ liệu dự phòng cục bộ chỉ được dùng khi truy vấn Sanity lỗi; một danh sách đã xuất bản nhưng rỗng được tôn trọng là danh sách rỗng để quản trị viên có thể chủ động ẩn toàn bộ sản phẩm hoặc bài viết.
+
+Sanity Studio được giữ thành một dự án độc lập, nằm cạnh ứng dụng này. Chỉ nội dung đã **Publish** mới xuất hiện trên website công khai.
 
 Sau khi đưa website lên tên miền thật, khai báo sitemap trong Google Search Console:
 
@@ -108,16 +118,21 @@ build/                      Cấu hình build Sites/vinext
 
 ## Chỉnh sửa nội dung
 
-- Nội dung trang chủ, địa chỉ, hotline và liên kết CTA: `app/page.tsx`.
+- Hotline, Zalo, Hero, CTA, popup, địa chỉ và nội dung footer: mở **Cài đặt website** trong Sanity Studio.
+- Sản phẩm, giá, tình trạng hàng và ảnh: mở **Sản phẩm** trong Sanity Studio.
+- Bài viết, ảnh đại diện, nội dung và SEO: mở **Bài viết** trong Sanity Studio.
 - CSS, màu sắc, font chữ và responsive: `app/globals.css`.
-- Hotline trong phần tin tức: `app/tin-tuc/NewsChrome.tsx` và `app/tin-tuc/NewsArticlePage.tsx`.
-- Danh sách/nội dung bài viết: `app/tin-tuc/news-data.ts`.
+- Dữ liệu dự phòng khi Sanity mất kết nối: `sanity/fallback.ts` và `app/tin-tuc/news-data.ts`.
 - Hình ảnh thương hiệu: `public/tram-laptop-viet/`.
 
 Khi đổi hotline, giữ hai dạng:
 
 - Dạng máy gọi/Zalo: chỉ có số, ví dụ `0343323865`.
 - Dạng hiển thị: có dấu chấm, ví dụ `0343.323.865`.
+
+Lưu ý: hai biểu mẫu “Yêu cầu gọi lại” hiện mới xử lý trạng thái giao diện, chưa gửi lead
+đến email/CRM. Các CTA gọi điện và Zalo hoạt động trực tiếp. Muốn lưu lead cần cấu hình thêm
+một đích nhận server-side cùng khóa bí mật tương ứng.
 
 ## Các URL hiện có
 
