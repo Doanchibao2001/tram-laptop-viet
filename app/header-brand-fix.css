@@ -1,4 +1,19 @@
-/* Refine the desktop brand lockup: clearer separation, larger logo, calmer text rhythm. */
+/* Refine the brand lockup and use the repair-pin mascot as the visible mark. */
+.tram-brand .tram-logo {
+  display: none;
+}
+
+.tram-brand::before {
+  content: "";
+  display: block;
+  width: 78px;
+  height: 78px;
+  flex: 0 0 78px;
+  border-radius: 18px;
+  background: url("/favicon.svg") center / contain no-repeat;
+  box-shadow: 0 8px 22px rgba(158, 10, 22, 0.2);
+}
+
 @media (min-width: 701px) {
   .header-main {
     min-height: 112px;
@@ -9,12 +24,6 @@
   .tram-brand {
     min-width: 276px;
     gap: 16px;
-  }
-
-  .tram-logo {
-    width: 78px;
-    height: 78px;
-    flex: 0 0 78px;
   }
 
   .tram-wordmark {
@@ -46,10 +55,11 @@
     gap: 13px;
   }
 
-  .tram-logo {
+  .tram-brand::before {
     width: 72px;
     height: 72px;
     flex-basis: 72px;
+    border-radius: 16px;
   }
 
   .tram-wordmark b {
@@ -66,10 +76,12 @@
     gap: 11px;
   }
 
-  .tram-logo {
+  .tram-brand::before {
     width: 56px;
     height: 56px;
     flex: 0 0 56px;
+    border-radius: 14px;
+    box-shadow: 0 6px 16px rgba(158, 10, 22, 0.18);
   }
 
   .tram-wordmark {
