@@ -31,9 +31,9 @@ jobs:
           )
 
           HTTP_CODE=$(curl --silent --show-error --output /tmp/analytics-response.json --write-out '%{http_code}' \
-            --request POST 'https://tramlaptopviet.vn/api/analytics/event' \
+            --request POST 'https://www.tramlaptopviet.vn/api/analytics/event' \
             --header 'content-type: application/json' \
-            --header 'origin: https://tramlaptopviet.vn' \
+            --header 'origin: https://www.tramlaptopviet.vn' \
             --data "$PAYLOAD")
 
           RESPONSE=$(cat /tmp/analytics-response.json)
