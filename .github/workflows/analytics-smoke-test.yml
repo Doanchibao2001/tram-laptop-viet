@@ -53,3 +53,5 @@ jobs:
           git add .github/analytics-smoke-test-result.json
           git commit -m 'Record analytics smoke test result' || exit 0
           git push
+
+# Manual retest trigger: 2026-07-20 ready-check-2
