@@ -79,6 +79,16 @@ pnpm start
 
 Build phải hoàn tất trước khi bàn giao lên hosting. Tùy nhà cung cấp hosting, cần cấu hình biến môi trường giống phần trên.
 
+## Triển khai trên Vercel
+
+Kết nối repository GitHub với Vercel và giữ Framework Preset là `Next.js`. Dự án dùng các thiết lập mặc định sau:
+
+- Install Command: `pnpm install --frozen-lockfile`
+- Build Command: `pnpm build`
+- Output Directory: để trống để Vercel tự nhận `.next`
+
+Trong phần Environment Variables của Vercel, đặt `NEXT_PUBLIC_SITE_URL` thành tên miền chính thức. Có thể thêm `GOOGLE_SITE_VERIFICATION` sau khi xác minh Google Search Console.
+
 ## Cấu trúc quan trọng
 
 ```text
