@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { getSiteFaviconUrl } from "@/sanity/lib/site-metadata";
 import "./globals.css";
+import "./process-fix.css";
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://tramlaptopviet.vn";
 const googleSiteVerification = process.env.GOOGLE_SITE_VERIFICATION;
