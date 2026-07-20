@@ -4,6 +4,7 @@ import "./globals.css";
 import "./process-fix.css";
 import "./typography-fix.css";
 import "./modern-ui.css";
+import "./header-brand-fix.css";
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://tramlaptopviet.vn";
 const googleSiteVerification = process.env.GOOGLE_SITE_VERIFICATION;
