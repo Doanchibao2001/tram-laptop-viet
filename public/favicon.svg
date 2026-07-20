@@ -1,7 +1,16 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-labelledby="title description">
   <title id="title">Trạm Laptop Việt</title>
-  <desc id="description">Biểu tượng chữ T và đế laptop tối giản</desc>
-  <rect width="64" height="64" rx="17" fill="#9E0A16"/>
-  <path d="M17 17h30v8H36v20h-8V25H17z" fill="#fff"/>
-  <path d="M15 48.5h34a2.5 2.5 0 0 1 2.5 2.5v1.5h-39V51a2.5 2.5 0 0 1 2.5-2.5z" fill="#fff" opacity=".94"/>
+  <desc id="description">Linh vật bút sửa chữa trên màn hình laptop</desc>
+  <defs>
+    <linearGradient id="brandRed" x1="8" y1="6" x2="56" y2="58" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#F0192D"/>
+      <stop offset="1" stop-color="#A90818"/>
+    </linearGradient>
+  </defs>
+  <rect width="64" height="64" rx="15" fill="url(#brandRed)"/>
+  <path d="M11 25.5a3 3 0 0 1 3-3h36a3 3 0 0 1 3 3v23H11v-23Z" fill="none" stroke="#fff" stroke-width="4.2" stroke-linejoin="round"/>
+  <path d="M7.5 51.5h49c0 3.4-2.8 6.2-6.2 6.2H13.7a6.2 6.2 0 0 1-6.2-6.2Z" fill="#fff"/>
+  <path d="M32 7.5c-8.2 0-14.2 6.1-14.2 14.1 0 9.1 8.2 18.9 14.2 26.2 6-7.3 14.2-17.1 14.2-26.2 0-8-6-14.1-14.2-14.1Z" fill="#fff"/>
+  <circle cx="32" cy="19.3" r="4.5" fill="#C80E20"/>
+  <path d="M29.6 20.5h4.8v10.9l-2.4 4.1-2.4-4.1V20.5Z" fill="#C80E20"/>
 </svg>
