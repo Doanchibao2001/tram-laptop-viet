@@ -1,0 +1,183 @@
+/* Modern typography system: cleaner Vietnamese text, softer rhythm, consistent hierarchy. */
+:root {
+  --font-ui: "Be Vietnam Pro", Inter, ui-sans-serif, system-ui, -apple-system,
+    BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --heading-tracking: -0.035em;
+}
+
+html {
+  font-synthesis: none;
+}
+
+body,
+button,
+input,
+select,
+textarea {
+  font-family: var(--font-ui);
+}
+
+h1,
+h2,
+h3,
+h4,
+.hero h1,
+.section-heading h2,
+.consult h2,
+.seo-grid h2,
+.news-listing-hero h1,
+.news-card h2,
+.news-card h3,
+.article-heading h1,
+.article-content h2,
+.article-index strong,
+.news-footer b,
+.location-grid h3 {
+  font-family: var(--font-ui);
+  font-style: normal;
+  font-weight: 700;
+  letter-spacing: var(--heading-tracking);
+  text-transform: none;
+}
+
+.hero h1 {
+  line-height: 1.04;
+  letter-spacing: -0.045em;
+}
+
+.hero h1 > span {
+  font-weight: 700;
+  line-height: 1.04;
+}
+
+.hero h1 > em {
+  margin-top: 0.16em;
+  font-weight: 800;
+  line-height: 1.1;
+  letter-spacing: -0.045em;
+}
+
+.eyebrow,
+.section-heading > span,
+.consult > div > div > span,
+.seo-kicker,
+.news-listing-hero > .container > span,
+.article-heading > span {
+  font-family: var(--font-ui);
+  font-weight: 700;
+  letter-spacing: 0.12em;
+}
+
+.section-heading h2 {
+  margin: 10px 0 12px;
+  font-size: clamp(34px, 3.15vw, 44px);
+  line-height: 1.16;
+}
+
+.section-heading p,
+.hero p,
+.service-grid p,
+.location-grid p,
+.seo-grid p,
+.article-content p,
+.article-content li {
+  line-height: 1.75;
+}
+
+.nav-links a,
+.menu-button,
+.btn,
+.header-consult,
+.mobile-header-call,
+.service-check,
+.price-row button {
+  font-family: var(--font-ui);
+  font-weight: 650;
+  letter-spacing: -0.012em;
+}
+
+.service-grid h3,
+.product-card h3,
+.process strong,
+.location-grid h3,
+.footer-grid h4 {
+  font-family: var(--font-ui);
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  text-transform: none;
+}
+
+.service-grid h3 {
+  font-size: 18px;
+  line-height: 1.35;
+}
+
+.product-card h3 {
+  font-size: 13px;
+  line-height: 1.55;
+}
+
+.process strong {
+  margin: 2px 0 8px;
+  font-size: 14px;
+  line-height: 1.35;
+}
+
+.process small {
+  font-size: 11px;
+  line-height: 1.6;
+}
+
+.location-grid h3 {
+  font-size: 22px;
+  line-height: 1.2;
+}
+
+.consult h2,
+.news-listing-hero h1,
+.article-heading h1 {
+  line-height: 1.1;
+}
+
+.news-card h2,
+.news-card h3,
+.article-content h2 {
+  line-height: 1.25;
+}
+
+@media (min-width: 520px) and (max-width: 700px) {
+  .hero h1 > em {
+    font-size: clamp(26px, 4.6vw, 30px);
+    letter-spacing: -0.04em;
+  }
+}
+
+@media (max-width: 519px) {
+  .hero h1 {
+    line-height: 1.05;
+  }
+
+  .hero h1 > span {
+    line-height: 1.05;
+  }
+
+  .hero h1 > em {
+    font-size: clamp(24px, 7.8vw, 34px);
+    line-height: 1.1;
+  }
+}
+
+@media (max-width: 700px) {
+  .section-heading h2 {
+    font-size: clamp(29px, 8.2vw, 36px);
+    line-height: 1.18;
+  }
+
+  .service-grid h3 {
+    font-size: 17px;
+  }
+
+  .process strong {
+    font-size: 13.5px;
+  }
+}
