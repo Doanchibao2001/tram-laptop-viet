@@ -1,6 +1,6 @@
 {
-  "testedAt": "2026-07-20T10:19:49Z",
-  "httpCode": 308,
-  "sessionId": "github-smoke-29734678730-1",
-  "response": Redirecting...
+  "testedAt": "2026-07-20T10:21:03Z",
+  "httpCode": 202,
+  "sessionId": "github-smoke-29734750077-1",
+  "response": {"ok":true,"stored":false}
 }
