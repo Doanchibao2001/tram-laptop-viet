@@ -10,3 +10,13 @@
 .process .section-heading > span {
   color: #ffb9c0;
 }
+
+/* Keep each step title and description legible on charcoal cards. */
+.process li strong {
+  color: #f7f8fa;
+}
+}
+
+.process li small {
+  color: #d7dce0;
+}
