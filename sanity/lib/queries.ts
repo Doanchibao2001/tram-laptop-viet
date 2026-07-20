@@ -76,15 +76,21 @@ const NEWS_PROJECTION = `
   }, [])
 `;
 
+const PUBLISHED_ARTICLE_FILTER = `
+  _type in ["article", "post", "newsArticle"]
+  && defined(slug.current)
+  && (!defined(publishedAt) || publishedAt <= now())
+`;
+
 export const NEWS_ARTICLES_QUERY = defineQuery(`
-  *[_type in ["article", "post", "newsArticle"] && defined(slug.current)]
+  *[${PUBLISHED_ARTICLE_FILTER}]
   | order(coalesce(publishedAt, _createdAt) desc) {
     ${NEWS_PROJECTION}
   }
 `);
 
 export const NEWS_ARTICLE_QUERY = defineQuery(`
-  *[_type in ["article", "post", "newsArticle"] && slug.current == $slug][0] {
+  *[${PUBLISHED_ARTICLE_FILTER} && slug.current == $slug][0] {
     ${NEWS_PROJECTION}
   }
 `);
