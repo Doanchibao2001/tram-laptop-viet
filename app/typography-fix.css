@@ -1,0 +1,32 @@
+/* Correct hero-title rhythm for Vietnamese uppercase text and narrow screens. */
+.hero h1 {
+  line-height: 1.08;
+}
+
+.hero h1 > span {
+  display: block;
+  line-height: 1.08;
+}
+
+.hero h1 > em {
+  display: block;
+  margin-top: 0.18em;
+  line-height: 1.12;
+}
+
+@media (max-width: 519px) {
+  .hero h1 {
+    line-height: 1.08;
+  }
+
+  .hero h1 > span {
+    line-height: 1.08;
+  }
+
+  .hero h1 > em {
+    margin-top: 0.2em;
+    font-size: clamp(24px, 7.8vw, 34px);
+    line-height: 1.12;
+    white-space: nowrap;
+  }
+}
