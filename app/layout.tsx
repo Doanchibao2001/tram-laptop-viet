@@ -3,6 +3,7 @@ import { getSiteFaviconUrl } from "@/sanity/lib/site-metadata";
 import "./globals.css";
 import "./process-fix.css";
 import "./typography-fix.css";
+import "./modern-ui.css";
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://tramlaptopviet.vn";
 const googleSiteVerification = process.env.GOOGLE_SITE_VERIFICATION;
@@ -37,9 +38,9 @@ export async function generateMetadata(): Promise<Metadata> {
     verification: googleSiteVerification ? { google: googleSiteVerification } : undefined,
     alternates: { canonical: "/" },
     icons: {
-      icon: [{ url: favicon, sizes: "512x512" }],
+      icon: [{ url: favicon, sizes: "any" }],
       shortcut: [{ url: favicon }],
-      apple: [{ url: favicon, sizes: "180x180" }],
+      apple: [{ url: "/tram-laptop-viet/logo-round.jpg", sizes: "180x180" }],
     },
     robots: {
       index: true,
