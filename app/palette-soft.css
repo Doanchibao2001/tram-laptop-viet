@@ -1,0 +1,336 @@
+/* Softer brand palette: mostly white/ivory, restrained charcoal, red only for actions and key signals. */
+:root {
+  --brand-red: #a81020;
+  --brand-red-dark: #86101b;
+  --brand-red-soft: #d85c68;
+  --brand-ivory: #faf8f7;
+  --brand-surface: #f3f4f5;
+  --brand-charcoal: #272b2f;
+  --brand-charcoal-soft: #3f474d;
+  --brand-text: #50555a;
+  --brand-border: #e3e5e7;
+  --brand-peach: #e9b4a8;
+  --red: var(--brand-red);
+  --red-dark: var(--brand-red-dark);
+  --ink: var(--brand-charcoal);
+  --muted: var(--brand-text);
+  --cream: var(--brand-ivory);
+}
+
+body {
+  background: var(--brand-ivory);
+  color: var(--brand-charcoal);
+}
+
+.topbar {
+  background: var(--brand-charcoal);
+  color: #f4f5f6;
+}
+
+.header {
+  background: #fff;
+  box-shadow: 0 1px 0 var(--brand-border);
+}
+
+.nav {
+  background: #fff;
+  color: var(--brand-charcoal);
+  border-top: 1px solid #f1f1f2;
+  border-bottom: 1px solid var(--brand-border);
+}
+
+.menu-button {
+  background: var(--brand-charcoal);
+  color: #fff;
+  border-radius: 12px 12px 0 0;
+}
+
+.nav-links a {
+  color: var(--brand-charcoal);
+}
+
+.nav-links a:hover {
+  background: #fbf0f1;
+  color: var(--brand-red);
+}
+
+.instant-cta {
+  background: #fff9f8;
+  border-color: #efd4d7;
+}
+
+.instant-cta strong,
+.instant-cta span {
+  color: var(--brand-charcoal);
+}
+
+.instant-cta a,
+.instant-cta button,
+.primary,
+.header-consult,
+.popup-phone-action,
+.floating-call {
+  background: var(--brand-red);
+  color: #fff;
+}
+
+.instant-cta a:hover,
+.instant-cta button:hover,
+.primary:hover,
+.header-consult:hover,
+.popup-phone-action:hover,
+.floating-call:hover {
+  background: var(--brand-red-dark);
+}
+
+.hero {
+  background: linear-gradient(180deg, var(--brand-surface) 0%, #fff 100%);
+}
+
+.hero-card {
+  background: #fff;
+  border-color: rgba(39, 43, 47, 0.08);
+  box-shadow: 0 16px 40px rgba(39, 43, 47, 0.08);
+}
+
+.hero .eyebrow,
+.section-heading > span,
+.seo-kicker,
+.text-link,
+.service-check,
+.location-grid article > span,
+.location-grid a,
+.news-read-more,
+.news-section-head > a {
+  color: var(--brand-red);
+}
+
+.hero h1,
+.section-heading h2,
+.service-grid h3,
+.product-card h3,
+.location-grid h3,
+.seo-grid h2,
+.faq-block h2 {
+  color: var(--brand-charcoal);
+}
+
+.hero p,
+.section-heading p,
+.service-grid p,
+.location-grid p,
+.seo-grid p {
+  color: var(--brand-text);
+}
+
+.hero-actions .secondary {
+  border-color: #d8a5aa;
+  background: rgba(255, 255, 255, 0.9);
+  color: var(--brand-red);
+}
+
+.hero-actions .secondary:hover {
+  background: #fbf0f1;
+  color: var(--brand-red-dark);
+}
+
+.hero-social-proof {
+  border-color: #ecd3d6;
+  background: rgba(255, 255, 255, 0.94);
+  box-shadow: 0 8px 22px rgba(39, 43, 47, 0.06);
+}
+
+.hero-badge {
+  background: var(--brand-charcoal);
+  color: #fff;
+}
+
+.side-promos article {
+  background: #f6e7e4;
+  color: var(--brand-charcoal);
+}
+
+.side-promos article.dark {
+  background: var(--brand-charcoal-soft);
+  color: #fff;
+}
+
+.brand-showcase,
+.products,
+.related-news {
+  background: var(--brand-surface);
+}
+
+.trust-strip,
+.services,
+.locations,
+.home-news {
+  background: #fff;
+}
+
+.trust-grid div {
+  border-color: var(--brand-border);
+}
+
+.trust-grid b {
+  color: var(--brand-red);
+}
+
+.service-grid article,
+.location-grid article,
+.seo-grid article,
+.faq-block,
+.news-card {
+  background: #fff;
+  border-color: var(--brand-border);
+  box-shadow: 0 8px 24px rgba(39, 43, 47, 0.04);
+}
+
+.service-grid article {
+  border-top: 1px solid var(--brand-border);
+  border-bottom: 1px solid var(--brand-border);
+}
+
+.service-grid article:hover,
+.location-grid article:hover,
+.news-card:hover {
+  border-color: #d9a3a9;
+  box-shadow: 0 16px 34px rgba(39, 43, 47, 0.08);
+}
+
+.service-grid article > span {
+  color: #c8cdd1;
+}
+
+.product-card {
+  background: #fff;
+  border-color: var(--brand-border);
+  box-shadow: 0 8px 22px rgba(39, 43, 47, 0.04);
+}
+
+.product-card:hover {
+  background: #fff;
+  border-color: #d9a3a9;
+  box-shadow: 0 16px 32px rgba(39, 43, 47, 0.09);
+}
+
+.product-image span,
+.price-row button {
+  background: var(--brand-red);
+}
+
+.price-row button:hover {
+  background: var(--brand-red-dark);
+}
+
+.process {
+  background: var(--brand-charcoal);
+}
+
+.process li {
+  background: #343b40;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.process li > b {
+  color: #ef8f98;
+}
+
+.process small,
+.process .section-heading p {
+  color: #c8cdd1;
+}
+
+.process .section-heading > span {
+  color: #f2b8be;
+}
+
+.process .white {
+  background: #fff;
+  color: var(--brand-charcoal);
+}
+
+.seo-section {
+  background: var(--brand-ivory);
+}
+
+.consult {
+  background: var(--brand-charcoal-soft);
+  color: #fff;
+}
+
+.consult > div > div > span {
+  color: #f3c2c7;
+}
+
+.consult p {
+  color: #e0e3e5;
+}
+
+.consult input,
+.consult select {
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 12px;
+}
+
+.consult .btn {
+  background: var(--brand-red);
+}
+
+.consult .btn:hover {
+  background: var(--brand-red-dark);
+}
+
+footer,
+.news-footer {
+  background: var(--brand-charcoal);
+}
+
+.footer-grid p,
+.footer-grid a,
+.news-footer p,
+.news-footer a {
+  color: #c2c7cb;
+}
+
+.article-cta {
+  background: var(--brand-charcoal-soft);
+}
+
+.article-index {
+  border-color: var(--brand-border);
+  border-top-color: var(--brand-red);
+  background: var(--brand-surface);
+}
+
+@media (max-width: 700px) {
+  .nav {
+    background: #fff;
+  }
+
+  .menu-button {
+    border-radius: 12px;
+  }
+
+  .nav-links {
+    border-color: var(--brand-border);
+    background: #fff;
+    color: var(--brand-charcoal);
+  }
+
+  .nav-links a {
+    border-color: #eceef0;
+  }
+
+  .hero {
+    background: var(--brand-surface);
+  }
+
+  .service-grid article,
+  .location-grid article,
+  .seo-grid article,
+  .faq-block,
+  .product-card {
+    box-shadow: 0 8px 20px rgba(39, 43, 47, 0.05);
+  }
+}
