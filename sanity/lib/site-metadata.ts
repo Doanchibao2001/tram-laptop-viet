@@ -4,12 +4,12 @@ import { defineQuery } from "next-sanity";
 import { client } from "./client";
 import { urlFor } from "./image";
 
-const fallbackFavicon = "/tram-laptop-viet/logo-round.jpg";
+const fallbackFavicon = "/favicon.svg";
 const fetchOptions = { next: { revalidate: 60 } } as const;
 
 const SITE_FAVICON_QUERY = defineQuery(`
   *[_id == "siteSettings" && _type == "siteSettings"][0] {
-    "faviconSource": coalesce(favicon, logo)
+    "faviconSource": favicon
   }
 `);
 
