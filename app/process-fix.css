@@ -1,0 +1,12 @@
+/* Keep the process-section heading readable on the dark surface. */
+.process .section-heading h2 {
+  color: #fff;
+}
+
+.process .section-heading p {
+  color: #d3d3d3;
+}
+
+.process .section-heading > span {
+  color: #ffb9c0;
+}
