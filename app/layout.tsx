@@ -1,5 +1,7 @@
 import type { Metadata, Viewport } from "next";
+import { Suspense } from "react";
 import { getSiteFaviconUrl } from "@/sanity/lib/site-metadata";
+import AnalyticsTracker from "./AnalyticsTracker";
 import "./globals.css";
 import "./process-fix.css";
 import "./typography-fix.css";
@@ -85,5 +87,14 @@ export const viewport: Viewport = {
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
-  return <html lang="vi"><body>{children}</body></html>;
+  return (
+    <html lang="vi">
+      <body>
+        <Suspense fallback={null}>
+          <AnalyticsTracker />
+        </Suspense>
+        {children}
+      </body>
+    </html>
+  );
 }
