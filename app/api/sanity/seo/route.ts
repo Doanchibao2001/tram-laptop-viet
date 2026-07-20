@@ -54,7 +54,7 @@ async function writeSlug(documentId: string, title: string, keywords: string[]) 
   const slug = await uniqueSlug(generated, documentId);
   await sanityServerClient
     .patch(documentId)
-    .setIfMissing({ slug: { _type: "slug", current: slug } })
+    .set({ slug: { _type: "slug", current: slug } })
     .commit({ autoGenerateArrayKeys: true });
 
   revalidatePath("/sitemap.xml");
