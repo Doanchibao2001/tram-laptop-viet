@@ -23,11 +23,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       lastModified: new Date(`${article.updatedAt}T08:00:00+07:00`),
       changeFrequency: "monthly" as const,
       priority: 0.7,
-      images: [
-        article.image.startsWith("http")
-          ? article.image
-          : `${siteUrl}${article.image}`,
-      ],
     })),
   ];
 }
