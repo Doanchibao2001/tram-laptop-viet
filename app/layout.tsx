@@ -5,6 +5,7 @@ import "./process-fix.css";
 import "./typography-fix.css";
 import "./modern-ui.css";
 import "./header-brand-fix.css";
+import "./palette-soft.css";
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://tramlaptopviet.vn";
 const googleSiteVerification = process.env.GOOGLE_SITE_VERIFICATION;
@@ -80,7 +81,7 @@ export async function generateMetadata(): Promise<Metadata> {
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
-  themeColor: "#9E0A16",
+  themeColor: "#A81020",
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
