@@ -205,7 +205,7 @@ export default function HomeClient({
 
       <section className="hero">
         <div className="container hero-grid">
-          <aside className="category-panel"><h3>Danh mục sản phẩm</h3>{categories.map((item) => <a href="#san-pham" key={item}><span>{item}</span><b>›</b></a>)}</aside>
+          <aside className="category-panel" aria-label="Danh mục sản phẩm"><div className="category-title">Danh mục sản phẩm</div>{categories.map((item) => <a href="#san-pham" key={item}><span>{item}</span><b>›</b></a>)}</aside>
           <div className="hero-card">
             <div className="hero-copy"><span className="eyebrow">{heroEyebrow}</span><h1><span>{heroTitle}</span><em>{heroAccent}</em></h1><p>{heroDescription}</p><div className="hero-actions"><button className="btn primary hero-call" onClick={() => setPopupOpen(true)}><i className="ui-icon icon-calendar" aria-hidden="true"/><b>{primaryCtaLabel}</b></button><a className="btn secondary" href={zaloUrl} target="_blank" rel="noreferrer"><i className="ui-icon icon-zalo" aria-hidden="true"/>{secondaryCtaLabel}</a></div><div className="hero-risk-reversal"><span>✓ Không tự ý sửa</span><span>✓ Báo giá trước khi làm</span></div><div className="hero-social-proof" aria-label={socialProof}><strong>{socialProofCount}</strong><span>{socialProofLineOne}{socialProofLineTwo && <><br/>{socialProofLineTwo}</>}</span></div><a className="nearby-link" href={`tel:${hotline}`}>Máy cần gấp? Gọi kỹ thuật viên {hotlineDisplay} →</a></div>
             <img className="hero-photo" src={heroImage} alt={heroImageAlt} />
