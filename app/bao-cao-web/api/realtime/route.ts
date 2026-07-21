@@ -17,6 +17,9 @@ type RecentEvent = {
   utmMedium?: string;
   utmCampaign?: string;
   deviceType?: string;
+  country?: string;
+  region?: string;
+  city?: string;
 };
 
 function sourceLabel(event: RecentEvent): string {
@@ -34,7 +37,7 @@ export async function GET() {
 
   const since = new Date(Date.now() - ACTIVE_WINDOW_SECONDS * 1000).toISOString();
   const events = await sanityServerClient.fetch<RecentEvent[]>(
-    `*[_type == "webEvent" && occurredAt >= $since] | order(occurredAt desc)[0...5000]{sessionId,path,occurredAt,referrerHost,utmSource,utmMedium,utmCampaign,deviceType}`,
+    `*[_type == "webEvent" && occurredAt >= $since] | order(occurredAt desc)[0...5000]{sessionId,path,occurredAt,referrerHost,utmSource,utmMedium,utmCampaign,deviceType,country,region,city}`,
     { since },
     { cache: "no-store" },
   );
@@ -50,6 +53,7 @@ export async function GET() {
     source: sourceLabel(event),
     campaign: event.utmCampaign,
     deviceType: event.deviceType || "unknown",
+    location: [event.city, event.region, event.country].filter(Boolean).join(", ") || "Không xác định",
     lastSeen: event.occurredAt || since,
   }));
 

@@ -1,4 +1,4 @@
-import { randomUUID } from "node:crypto";
+import { createHmac, randomUUID } from "node:crypto";
 import { NextRequest, NextResponse } from "next/server";
 import { hasSanityWriteToken, sanityServerClient } from "@/sanity/lib/server-client";
 
@@ -88,6 +88,31 @@ function rateLimitKey(request: NextRequest): string {
     || "unknown";
 }
 
+function requestIp(request: NextRequest): string | undefined {
+  return request.headers.get("x-forwarded-for")?.split(",")[0]?.trim()
+    || request.headers.get("x-real-ip")?.trim()
+    || undefined;
+}
+
+function anonymousDailyIpHash(request: NextRequest): string | undefined {
+  const ip = requestIp(request);
+  const secret = process.env.ANALYTICS_IP_HASH_SECRET?.trim();
+  if (!ip || !secret) return undefined;
+
+  const day = new Date().toISOString().slice(0, 10);
+  return createHmac("sha256", secret).update(`${day}:${ip}`).digest("hex").slice(0, 24);
+}
+
+function decodedHeader(request: NextRequest, name: string, maxLength: number): string | undefined {
+  const value = request.headers.get(name)?.trim();
+  if (!value) return undefined;
+  try {
+    return decodeURIComponent(value).slice(0, maxLength);
+  } catch {
+    return value.slice(0, maxLength);
+  }
+}
+
 function rateLimited(request: NextRequest): boolean {
   const now = Date.now();
   const key = rateLimitKey(request);
@@ -155,6 +180,10 @@ export async function POST(request: NextRequest) {
       viewportWidth,
       deviceType: deviceType(viewportWidth),
       language: shortText(payload.language, 20),
+      country: decodedHeader(request, "x-vercel-ip-country", 2),
+      region: decodedHeader(request, "x-vercel-ip-country-region", 80),
+      city: decodedHeader(request, "x-vercel-ip-city", 120),
+      ipHash: anonymousDailyIpHash(request),
     });
   } catch (error) {
     console.error("Analytics event could not be stored in Sanity.", {

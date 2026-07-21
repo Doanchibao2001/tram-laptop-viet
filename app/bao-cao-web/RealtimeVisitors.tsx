@@ -8,6 +8,7 @@ type ActiveVisitor = {
   source: string;
   campaign?: string;
   deviceType: string;
+  location: string;
   lastSeen: string;
 };
 
@@ -63,10 +64,11 @@ export default function RealtimeVisitors() {
       {data?.visitors.length ? (
         <div style={{ overflowX: "auto" }}>
           <table className="daily-table realtime-table">
-            <thead><tr><th>Trang đang xem</th><th>Nguồn</th><th>Chiến dịch</th><th>Thiết bị</th><th>Hoạt động cuối</th></tr></thead>
+            <thead><tr><th>Trang đang xem</th><th>Khu vực gần đúng</th><th>Nguồn</th><th>Chiến dịch</th><th>Thiết bị</th><th>Hoạt động cuối</th></tr></thead>
             <tbody>{data.visitors.map((visitor) => (
               <tr key={visitor.sessionId}>
                 <td>{visitor.path}</td>
+                <td>{visitor.location}</td>
                 <td>{visitor.source}</td>
                 <td>{visitor.campaign ?? "—"}</td>
                 <td>{visitor.deviceType}</td>

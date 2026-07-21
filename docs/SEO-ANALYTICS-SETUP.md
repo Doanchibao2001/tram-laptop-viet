@@ -8,6 +8,7 @@ Add these server-only variables to both Production and Preview:
 SANITY_WRITE_TOKEN=<Sanity token with create/update permission>
 SANITY_WEBHOOK_SECRET=<a long random secret>
 ANALYTICS_DASHBOARD_KEY=<password for /bao-cao-web>
+ANALYTICS_IP_HASH_SECRET=<long random server-only secret>
 ```
 
 Do not prefix these variables with `NEXT_PUBLIC_`.
@@ -112,3 +113,7 @@ The dashboard reports:
 - Daily results for the last 14 days
 
 The dashboard and analytics API routes are excluded from `robots.txt` and the dashboard has `noindex` metadata.
+`ANALYTICS_IP_HASH_SECRET` is never exposed to the browser. It creates a shortened
+HMAC identifier that rotates daily; the raw visitor IP is not persisted. Vercel's
+request headers provide approximate country, region, and city without an external
+geolocation API key.

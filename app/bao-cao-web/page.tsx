@@ -27,6 +27,9 @@ type WebEvent = {
   utmCampaign?: string;
   deviceType?: string;
   label?: string;
+  country?: string;
+  region?: string;
+  city?: string;
 };
 
 type RankedItem = { label: string; count: number };
@@ -131,7 +134,7 @@ export default async function AnalyticsDashboard({
 
   const since = sinceDays(30).toISOString();
   const events = await sanityServerClient.fetch<WebEvent[]>(
-    `*[_type == "webEvent" && occurredAt >= $since] | order(occurredAt desc)[0...50000]{eventName,path,sessionId,occurredAt,referrerHost,utmSource,utmMedium,utmCampaign,deviceType,label}`,
+    `*[_type == "webEvent" && occurredAt >= $since] | order(occurredAt desc)[0...50000]{eventName,path,sessionId,occurredAt,referrerHost,utmSource,utmMedium,utmCampaign,deviceType,label,country,region,city}`,
     { since },
     { cache: "no-store" },
   );
@@ -158,7 +161,7 @@ export default async function AnalyticsDashboard({
 
   return (
     <main className="analytics-page"><style>{dashboardCss}</style><div className="analytics-shell">
-      <header className="analytics-head"><div><span>FIRST-PARTY ANALYTICS</span><h1>Hiệu quả website</h1><p>Dữ liệu 30 ngày gần nhất, không lưu IP hoặc nội dung khách nhập vào biểu mẫu.</p></div><div className="analytics-status">Lưu sự kiện: <b>{hasSanityWriteToken() ? "Đang hoạt động" : "Chưa có SANITY_WRITE_TOKEN"}</b></div></header>
+      <header className="analytics-head"><div><span>FIRST-PARTY ANALYTICS</span><h1>Hiệu quả website</h1><p>Dữ liệu 30 ngày gần nhất; không lưu IP thô hoặc nội dung khách nhập vào biểu mẫu. Khu vực được suy ra gần đúng từ IP.</p></div><div className="analytics-status">Lưu sự kiện: <b>{hasSanityWriteToken() ? "Đang hoạt động" : "Chưa có SANITY_WRITE_TOKEN"}</b></div></header>
       <section className="metric-grid">
         <SummaryCard label="Lượt xem · 7 ngày" value={formatNumber(views7.length)} note="Sự kiện page_view" />
         <SummaryCard label="Phiên truy cập · 7 ngày" value={formatNumber(sessions7)} note="Đếm session ẩn danh" />
@@ -172,6 +175,7 @@ export default async function AnalyticsDashboard({
         <Ranking title="Hành động chuyển đổi" items={countBy(events.filter((event) => event.eventName && CONVERSION_EVENTS.has(event.eventName)), (event) => event.eventName)} />
         <Ranking title="Nguồn giới thiệu" items={countBy(events, (event) => event.referrerHost ?? (event.eventName === "page_view" ? "Truy cập trực tiếp" : undefined))} />
         <Ranking title="Nguồn chiến dịch UTM" items={countBy(events, (event) => event.utmSource)} />
+        <Ranking title="Khu vực truy cập" items={countBy(events.filter((event) => event.eventName === "page_view"), (event) => [event.city, event.region, event.country].filter(Boolean).join(", ") || undefined)} />
         <Ranking title="Thiết bị" items={countBy(events.filter((event) => event.eventName === "page_view"), (event) => event.deviceType)} />
         <Ranking title="CTA được quan tâm" items={countBy(events.filter((event) => CONVERSION_EVENTS.has(event.eventName ?? "") || event.eventName === "cta_click"), (event) => event.label)} />
       </section>
