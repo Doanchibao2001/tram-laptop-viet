@@ -112,8 +112,10 @@ export default function HomeClient({
   );
 
   useEffect(() => {
-    const popupSeenKey = "tram-laptop-viet-conversion-popup-v2";
+    const popupSeenKey = "tram-laptop-viet-conversion-popup-v3";
     let autoPopupTriggered = window.sessionStorage.getItem(popupSeenKey) === "1";
+    let dwellEligible = false;
+    let scrollProgress = 0;
     let collapseTimer = 0;
     let zaloInterval = 0;
 
@@ -124,10 +126,21 @@ export default function HomeClient({
       setPopupOpen(true);
     };
 
-    const popupTimer = window.setTimeout(triggerAutoPopup, 18000);
+    const tryContextualPopup = () => {
+      if (dwellEligible && scrollProgress >= 0.45) triggerAutoPopup();
+    };
+    const dwellTimer = window.setTimeout(() => {
+      dwellEligible = true;
+      tryContextualPopup();
+    }, 15000);
+    const fallbackTimer = window.setTimeout(() => {
+      if (scrollProgress >= 0.2) triggerAutoPopup();
+    }, 45000);
     const handleScroll = () => {
       const scrollable = document.documentElement.scrollHeight - window.innerHeight;
-      if (scrollable > 0 && window.scrollY / scrollable >= 0.55) triggerAutoPopup();
+      if (scrollable <= 0) return;
+      scrollProgress = window.scrollY / scrollable;
+      tryContextualPopup();
     };
 
     const expandZalo = () => {
@@ -147,7 +160,8 @@ export default function HomeClient({
     window.addEventListener("scroll", handleScroll, { passive: true });
     window.addEventListener("keydown", handleEscape);
     return () => {
-      window.clearTimeout(popupTimer);
+      window.clearTimeout(dwellTimer);
+      window.clearTimeout(fallbackTimer);
       window.clearTimeout(firstZaloExpansion);
       window.clearTimeout(collapseTimer);
       window.clearInterval(zaloInterval);
@@ -158,7 +172,7 @@ export default function HomeClient({
 
   const closePopup = () => {
     setPopupOpen(false);
-    window.sessionStorage.setItem("tram-laptop-viet-conversion-popup-v2", "1");
+    window.sessionStorage.setItem("tram-laptop-viet-conversion-popup-v3", "1");
   };
 
   return (
@@ -220,7 +234,7 @@ export default function HomeClient({
       <section className="consult" id="lien-he"><div className="container consult-grid"><div><span>TƯ VẤN MIỄN PHÍ</span><h2>Mô tả tình trạng máy,<br/>Trạm Laptop Việt gọi lại ngay.</h2><p>Hoặc gọi hotline <a href={`tel:${hotline}`}>{hotlineDisplay}</a> để được hỗ trợ nhanh.</p></div><form onSubmit={(e) => { e.preventDefault(); setSent(true); }}><input required placeholder="Họ và tên" aria-label="Họ và tên"/><input required type="tel" placeholder="Số điện thoại" aria-label="Số điện thoại"/><select aria-label="Dịch vụ cần tư vấn"><option>Dịch vụ cần tư vấn</option><option>Sửa laptop</option><option>Thay bàn phím</option><option>Thay màn hình</option><option>Thay pin · sạc</option></select><button className="btn primary" type="submit">{sent ? "Đã tiếp nhận yêu cầu ✓" : "Yêu cầu gọi lại"}</button></form></div></section>
 
       <footer><div className="container footer-grid"><div><a className="logo footer-logo tram-brand" href="#top"><img className="tram-logo" src="/tram-laptop-viet/logo-round.jpg" alt="Logo Trạm Laptop Việt" /><span className="tram-wordmark"><b>TRẠM LAPTOP</b><strong>VIỆT</strong></span></a><p>{footerDescription}</p></div><div><h4>Dịch vụ</h4><a href="#dich-vu">Sửa laptop lấy liền</a><a href="#san-pham">Linh kiện laptop</a><a href="#quy-trinh">Chính sách bảo hành</a></div><div><h4>Hỗ trợ</h4><a href={`tel:${hotline}`}>{hotlineDisplay}</a><a href="#cua-hang">Hệ thống cửa hàng</a><a href="#lien-he">Đăng ký tư vấn</a></div><div><h4>Giờ làm việc</h4><p>Thứ 2–7: 8:30–18:30<br/>Chủ nhật: 9:00–17:00</p></div></div><div className="copyright container">© 2026 Trạm Laptop Việt · Sửa chữa · Nâng cấp · Bảo hành.</div></footer>
-      {popupOpen && <div className="popup-backdrop" onMouseDown={(event) => { if (event.target === event.currentTarget) closePopup(); }}><section className="consult-popup" role="dialog" aria-modal="true" aria-labelledby="popup-title"><button className="popup-close" onClick={closePopup} aria-label="Đóng cửa sổ tư vấn">×</button><div className="popup-accent">CHƯA ĐỒNG Ý GIÁ · CHƯA TIẾN HÀNH SỬA</div><h2 id="popup-title">{popupHeadline}</h2><p>{popupDescription}</p><div className="popup-quick-actions"><a className="popup-zalo-action" href={zaloUrl} target="_blank" rel="noreferrer"><i className="ui-icon icon-zalo" aria-hidden="true"/><span><b>{popupPrimaryLabel}</b><small>Kỹ thuật viên đang online</small></span></a><a className="popup-phone-action" href={`tel:${hotline}`}><i className="ui-icon icon-phone" aria-hidden="true"/><span><b>{popupSecondaryLabel}</b><small>{hotlineDisplay}</small></span></a></div><ul><li>✓ Giải thích rõ lỗi và phương án</li><li>✓ Báo giá trước khi tiến hành</li><li>✓ Không tự ý thay linh kiện</li></ul><p className="popup-reassurance">Chỉ sửa khi bạn đã đồng ý giá.</p><div className="popup-divider"><span>Hoặc nhờ kỹ thuật viên gọi lại</span></div><form onSubmit={(event) => { event.preventDefault(); setSent(true); window.sessionStorage.setItem("tram-laptop-viet-conversion-popup-v2", "1"); }}><label><span>Số điện thoại của bạn</span><input type="tel" inputMode="tel" required placeholder="Nhập số để kỹ thuật viên gọi lại"/></label><label><span>Máy đang gặp tình trạng nào?</span><select defaultValue=""><option value="" disabled>Chọn dấu hiệu gần đúng nhất</option><option>Máy không lên nguồn</option><option>Bàn phím hoặc màn hình</option><option>Pin hoặc sạc</option><option>Máy chậm, nóng</option><option>Lỗi khác</option></select></label><button type="submit">{sent ? "Đã nhận yêu cầu — kỹ thuật viên sẽ gọi lại ✓" : "Nhờ kỹ thuật viên gọi lại miễn phí"}</button></form><small>Không thu phí tư vấn và không tự ý tiến hành sửa chữa.</small></section></div>}
+      {popupOpen && <div className="popup-backdrop" onMouseDown={(event) => { if (event.target === event.currentTarget) closePopup(); }}><section className="consult-popup" role="dialog" aria-modal="true" aria-labelledby="popup-title"><button className="popup-close" onClick={closePopup} aria-label="Đóng cửa sổ tư vấn">×</button><div className="popup-accent">CHƯA ĐỒNG Ý GIÁ · CHƯA TIẾN HÀNH SỬA</div><h2 id="popup-title">{popupHeadline}</h2><p>{popupDescription}</p><div className="popup-quick-actions"><a className="popup-zalo-action" href={zaloUrl} target="_blank" rel="noreferrer"><i className="ui-icon icon-zalo" aria-hidden="true"/><span><b>{popupPrimaryLabel}</b><small>Kỹ thuật viên đang online</small></span></a><a className="popup-phone-action" href={`tel:${hotline}`}><i className="ui-icon icon-phone" aria-hidden="true"/><span><b>{popupSecondaryLabel}</b><small>{hotlineDisplay}</small></span></a></div><ul><li>✓ Giải thích rõ lỗi và phương án</li><li>✓ Báo giá trước khi tiến hành</li><li>✓ Không tự ý thay linh kiện</li></ul><p className="popup-reassurance">Chỉ sửa khi bạn đã đồng ý giá.</p><div className="popup-divider"><span>Hoặc nhờ kỹ thuật viên gọi lại</span></div><form onSubmit={(event) => { event.preventDefault(); setSent(true); window.sessionStorage.setItem("tram-laptop-viet-conversion-popup-v3", "1"); }}><label><span>Số điện thoại của bạn</span><input type="tel" inputMode="tel" required placeholder="Nhập số để kỹ thuật viên gọi lại"/></label><label><span>Máy đang gặp tình trạng nào?</span><select defaultValue=""><option value="" disabled>Chọn dấu hiệu gần đúng nhất</option><option>Máy không lên nguồn</option><option>Bàn phím hoặc màn hình</option><option>Pin hoặc sạc</option><option>Máy chậm, nóng</option><option>Lỗi khác</option></select></label><button type="submit">{sent ? "Đã nhận yêu cầu — kỹ thuật viên sẽ gọi lại ✓" : "Nhờ kỹ thuật viên gọi lại miễn phí"}</button></form><small>Không thu phí tư vấn và không tự ý tiến hành sửa chữa.</small></section></div>}
       <a className="floating-zalo" href={zaloUrl} target="_blank" rel="noreferrer" aria-label={`Chat Zalo ${hotline}`}><i className="ui-icon icon-zalo" aria-hidden="true"/><span>Chat Zalo</span></a>
       <a className="floating-call" href={`tel:${hotline}`} aria-label={`Gọi ${hotline}`}><i className="ui-icon icon-phone" aria-hidden="true"/><span>Gọi ngay</span></a>
       <nav className="mobile-cta" aria-label="Liên hệ nhanh"><a href={`tel:${hotline}`}><i className="ui-icon icon-phone" aria-hidden="true"/><span>Máy cần gấp</span></a><a className={`mobile-zalo-cta ${zaloExpanded ? "expanded" : ""}`} href={zaloUrl} target="_blank" rel="noreferrer" aria-label="Gửi ảnh lỗi qua Zalo"><span className="zalo-online"><i/>Kỹ thuật viên online</span><i className="ui-icon icon-zalo" aria-hidden="true"/><span className="zalo-expand-label"><b>Gửi ảnh lỗi</b><small>kiểm tra nhanh</small></span></a><button onClick={() => setPopupOpen(true)}><i className="ui-icon icon-calendar" aria-hidden="true"/><span>Kiểm tra miễn phí</span></button></nav>
