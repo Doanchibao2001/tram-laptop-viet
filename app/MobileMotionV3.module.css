@@ -1,0 +1,133 @@
+.root {
+  --motion-v3-fast: 140ms;
+  --motion-v3-normal: 240ms;
+  --motion-v3-slow: 680ms;
+  --motion-v3-ease-standard: cubic-bezier(.2, .8, .2, 1);
+  --motion-v3-ease-emphasis: cubic-bezier(.22, 1, .36, 1);
+}
+
+.root :global(.btn),
+.root :global(.mobile-header-call),
+.root :global(.mobile-cta a),
+.root :global(.mobile-cta button),
+.root :global(.service-check),
+.root :global(.price-row button),
+.root :global(.nearby-link) {
+  transition-property: transform, background-color, color, border-color, box-shadow, opacity;
+  transition-duration: var(--motion-v3-normal);
+  transition-timing-function: var(--motion-v3-ease-standard);
+}
+
+.root :global(.hero-photo) {
+  opacity: .94;
+  transform: scale(1.016);
+  transform-origin: 68% 43%;
+  transition:
+    opacity var(--motion-v3-slow) var(--motion-v3-ease-standard),
+    transform 920ms var(--motion-v3-ease-emphasis);
+  will-change: opacity, transform;
+}
+
+.root.loaded :global(.hero-photo) {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.root :global(.process li) {
+  opacity: 0;
+  transform: translateY(14px);
+  transition:
+    opacity 360ms var(--motion-v3-ease-standard),
+    transform 420ms var(--motion-v3-ease-emphasis),
+    box-shadow var(--motion-v3-normal) var(--motion-v3-ease-standard);
+  will-change: opacity, transform;
+}
+
+.root .processVisible :global(li) {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.root .processVisible :global(li:nth-child(1)) {
+  transition-delay: 0ms;
+}
+
+.root .processVisible :global(li:nth-child(2)) {
+  transition-delay: 70ms;
+}
+
+.root .processVisible :global(li:nth-child(3)) {
+  transition-delay: 140ms;
+}
+
+.root .processVisible :global(li:nth-child(4)) {
+  transition-delay: 210ms;
+}
+
+.success {
+  background: #16794d !important;
+  color: #fff !important;
+  box-shadow: 0 10px 26px rgba(22, 121, 77, .24) !important;
+  animation: submitSuccess 540ms var(--motion-v3-ease-emphasis) both !important;
+}
+
+@keyframes submitSuccess {
+  0% {
+    transform: scale(.97);
+    opacity: .88;
+  }
+
+  58% {
+    transform: scale(1.025);
+  }
+
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@media (max-width: 700px) {
+  .root :global(.hero-photo) {
+    transform-origin: 72% 44%;
+  }
+
+  .root :global(.btn:active),
+  .root :global(.mobile-header-call:active),
+  .root :global(.mobile-cta a:active),
+  .root :global(.mobile-cta button:active),
+  .root :global(.price-row button:active) {
+    transform: scale(.975);
+    transition-duration: var(--motion-v3-fast);
+  }
+
+  .root :global(.process li) {
+    transform: translateY(12px);
+  }
+
+  .root .processVisible :global(li) {
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .root :global(.hero-photo),
+  .root :global(.process li),
+  .root :global(.btn),
+  .root :global(.mobile-header-call),
+  .root :global(.mobile-cta a),
+  .root :global(.mobile-cta button),
+  .root :global(.service-check),
+  .root :global(.price-row button),
+  .root :global(.nearby-link),
+  .success {
+    animation: none !important;
+    transition: none !important;
+  }
+
+  .root :global(.hero-photo),
+  .root :global(.process li) {
+    opacity: 1;
+    transform: none;
+  }
+}
