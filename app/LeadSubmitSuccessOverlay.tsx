@@ -15,7 +15,7 @@ export default function LeadSubmitSuccessOverlay() {
     let redirectTimer = 0;
 
     const redirectToFacebook = () => {
-      window.location.assign(FACEBOOK_PAGE_URL);
+      window.location.replace(FACEBOOK_PAGE_URL);
     };
 
     const handleSubmit = (event: SubmitEvent) => {
@@ -101,7 +101,7 @@ export default function LeadSubmitSuccessOverlay() {
         <button
           type="button"
           className={styles.facebookButton}
-          onClick={() => window.location.assign(FACEBOOK_PAGE_URL)}
+          onClick={() => window.location.replace(FACEBOOK_PAGE_URL)}
         >
           Đi tới Fanpage ngay
         </button>
