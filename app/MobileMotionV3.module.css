@@ -1,7 +1,7 @@
 .root {
   --motion-v3-fast: 140ms;
   --motion-v3-normal: 240ms;
-  --motion-v3-slow: 680ms;
+  --motion-v3-slow: 760ms;
   --motion-v3-ease-standard: cubic-bezier(.2, .8, .2, 1);
   --motion-v3-ease-emphasis: cubic-bezier(.22, 1, .36, 1);
 }
@@ -19,26 +19,93 @@
 }
 
 .root :global(.hero-photo) {
-  opacity: .94;
-  transform: scale(1.016);
+  opacity: .84;
+  transform: scale(1.035);
   transform-origin: 68% 43%;
   transition:
     opacity var(--motion-v3-slow) var(--motion-v3-ease-standard),
-    transform 920ms var(--motion-v3-ease-emphasis);
+    transform 980ms var(--motion-v3-ease-emphasis);
   will-change: opacity, transform;
 }
 
-.root.loaded :global(.hero-photo) {
+.root :global(.hero-copy) {
+  opacity: .88;
+  transform: translateY(11px);
+  transition:
+    opacity 560ms var(--motion-v3-ease-standard) 90ms,
+    transform 620ms var(--motion-v3-ease-emphasis) 90ms;
+}
+
+.root.loaded :global(.hero-photo),
+.root.loaded :global(.hero-copy) {
   opacity: 1;
-  transform: scale(1);
+  transform: none;
+}
+
+.revealSection :global(.section-heading),
+.revealSection :global(.brand-showcase img),
+.revealSection :global(.trust-grid > div),
+.revealSection :global(.service-grid > article),
+.revealSection :global(.product-card),
+.revealSection :global(.location-grid > article),
+.revealSection :global(.seo-grid > article),
+.revealSection :global(.faq-block),
+.revealSection :global(.consult-grid > div),
+.revealSection :global(.consult-grid > form) {
+  opacity: 0;
+  transform: translateY(18px);
+  transition:
+    opacity 400ms var(--motion-v3-ease-standard),
+    transform 480ms var(--motion-v3-ease-emphasis);
+  will-change: opacity, transform;
+}
+
+.revealVisible :global(.section-heading),
+.revealVisible :global(.brand-showcase img),
+.revealVisible :global(.trust-grid > div),
+.revealVisible :global(.service-grid > article),
+.revealVisible :global(.product-card),
+.revealVisible :global(.location-grid > article),
+.revealVisible :global(.seo-grid > article),
+.revealVisible :global(.faq-block),
+.revealVisible :global(.consult-grid > div),
+.revealVisible :global(.consult-grid > form) {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.revealVisible :global(.service-grid > article:nth-child(2)),
+.revealVisible :global(.product-card:nth-child(2)),
+.revealVisible :global(.location-grid > article:nth-child(2)),
+.revealVisible :global(.trust-grid > div:nth-child(2)) {
+  transition-delay: 70ms;
+}
+
+.revealVisible :global(.service-grid > article:nth-child(3)),
+.revealVisible :global(.product-card:nth-child(3)),
+.revealVisible :global(.location-grid > article:nth-child(3)),
+.revealVisible :global(.trust-grid > div:nth-child(3)),
+.revealVisible :global(.faq-block) {
+  transition-delay: 140ms;
+}
+
+.revealVisible :global(.service-grid > article:nth-child(4)),
+.revealVisible :global(.product-card:nth-child(4)),
+.revealVisible :global(.trust-grid > div:nth-child(4)),
+.revealVisible :global(.consult-grid > form) {
+  transition-delay: 210ms;
+}
+
+.revealVisible :global(.product-card:nth-child(n+5):nth-child(-n+8)) {
+  transition-delay: 90ms;
 }
 
 .root :global(.process li) {
   opacity: 0;
-  transform: translateY(14px);
+  transform: translateY(16px);
   transition:
-    opacity 360ms var(--motion-v3-ease-standard),
-    transform 420ms var(--motion-v3-ease-emphasis),
+    opacity 380ms var(--motion-v3-ease-standard),
+    transform 460ms var(--motion-v3-ease-emphasis),
     box-shadow var(--motion-v3-normal) var(--motion-v3-ease-standard);
   will-change: opacity, transform;
 }
@@ -53,15 +120,40 @@
 }
 
 .root .processVisible :global(li:nth-child(2)) {
-  transition-delay: 70ms;
+  transition-delay: 80ms;
 }
 
 .root .processVisible :global(li:nth-child(3)) {
-  transition-delay: 140ms;
+  transition-delay: 160ms;
 }
 
 .root .processVisible :global(li:nth-child(4)) {
-  transition-delay: 210ms;
+  transition-delay: 240ms;
+}
+
+.root :global(.faq-block summary) {
+  position: relative;
+  padding-right: 28px;
+}
+
+.root :global(.faq-block summary::after) {
+  content: "+";
+  position: absolute;
+  right: 4px;
+  top: 50%;
+  transform: translateY(-50%) rotate(0deg);
+  color: var(--brand-cta);
+  font-size: 18px;
+  font-weight: 500;
+  transition: transform var(--motion-v3-normal) var(--motion-v3-ease-emphasis);
+}
+
+.root :global(.faq-block details[open] summary::after) {
+  transform: translateY(-50%) rotate(45deg);
+}
+
+.root :global(.faq-block details[open] p) {
+  animation: faqReveal 260ms var(--motion-v3-ease-standard) both;
 }
 
 .success {
@@ -87,9 +179,45 @@
   }
 }
 
+@keyframes faqReveal {
+  from {
+    opacity: 0;
+    transform: translateY(-5px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 @media (max-width: 700px) {
   .root :global(.hero-photo) {
     transform-origin: 72% 44%;
+  }
+
+  .root :global(.nav-links) {
+    display: flex !important;
+    max-height: 0;
+    margin-top: 0;
+    opacity: 0;
+    overflow: hidden;
+    pointer-events: none;
+    transform: translateY(-10px) scale(.985);
+    transform-origin: top center;
+    transition:
+      max-height 360ms var(--motion-v3-ease-emphasis),
+      margin-top 240ms var(--motion-v3-ease-standard),
+      opacity 180ms ease,
+      transform 320ms var(--motion-v3-ease-emphasis);
+  }
+
+  .root :global(.nav-links.open) {
+    max-height: 390px;
+    margin-top: 10px;
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateY(0) scale(1);
   }
 
   .root :global(.btn:active),
@@ -97,12 +225,38 @@
   .root :global(.mobile-cta a:active),
   .root :global(.mobile-cta button:active),
   .root :global(.price-row button:active) {
-    transform: scale(.975);
+    transform: scale(.97);
     transition-duration: var(--motion-v3-fast);
   }
 
+  .revealSection :global(.section-heading),
+  .revealSection :global(.brand-showcase img),
+  .revealSection :global(.trust-grid > div),
+  .revealSection :global(.service-grid > article),
+  .revealSection :global(.product-card),
+  .revealSection :global(.location-grid > article),
+  .revealSection :global(.seo-grid > article),
+  .revealSection :global(.faq-block),
+  .revealSection :global(.consult-grid > div),
+  .revealSection :global(.consult-grid > form) {
+    transform: translateY(16px);
+  }
+
+  .revealVisible :global(.section-heading),
+  .revealVisible :global(.brand-showcase img),
+  .revealVisible :global(.trust-grid > div),
+  .revealVisible :global(.service-grid > article),
+  .revealVisible :global(.product-card),
+  .revealVisible :global(.location-grid > article),
+  .revealVisible :global(.seo-grid > article),
+  .revealVisible :global(.faq-block),
+  .revealVisible :global(.consult-grid > div),
+  .revealVisible :global(.consult-grid > form) {
+    transform: translateY(0);
+  }
+
   .root :global(.process li) {
-    transform: translateY(12px);
+    transform: translateY(14px);
   }
 
   .root .processVisible :global(li) {
@@ -112,6 +266,7 @@
 
 @media (prefers-reduced-motion: reduce) {
   .root :global(.hero-photo),
+  .root :global(.hero-copy),
   .root :global(.process li),
   .root :global(.btn),
   .root :global(.mobile-header-call),
@@ -120,13 +275,36 @@
   .root :global(.service-check),
   .root :global(.price-row button),
   .root :global(.nearby-link),
+  .root :global(.nav-links),
+  .root :global(.faq-block details[open] p),
+  .revealSection :global(.section-heading),
+  .revealSection :global(.brand-showcase img),
+  .revealSection :global(.trust-grid > div),
+  .revealSection :global(.service-grid > article),
+  .revealSection :global(.product-card),
+  .revealSection :global(.location-grid > article),
+  .revealSection :global(.seo-grid > article),
+  .revealSection :global(.faq-block),
+  .revealSection :global(.consult-grid > div),
+  .revealSection :global(.consult-grid > form),
   .success {
     animation: none !important;
     transition: none !important;
   }
 
   .root :global(.hero-photo),
-  .root :global(.process li) {
+  .root :global(.hero-copy),
+  .root :global(.process li),
+  .revealSection :global(.section-heading),
+  .revealSection :global(.brand-showcase img),
+  .revealSection :global(.trust-grid > div),
+  .revealSection :global(.service-grid > article),
+  .revealSection :global(.product-card),
+  .revealSection :global(.location-grid > article),
+  .revealSection :global(.seo-grid > article),
+  .revealSection :global(.faq-block),
+  .revealSection :global(.consult-grid > div),
+  .revealSection :global(.consult-grid > form) {
     opacity: 1;
     transform: none;
   }
