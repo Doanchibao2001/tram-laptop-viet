@@ -41,7 +41,6 @@ const CONVERSION_EVENTS = new Set([
   "phone_click",
   "zalo_click",
   "form_submit",
-  "product_inquiry",
 ]);
 
 function countBy(events: WebEvent[], selector: (event: WebEvent) => string | undefined): RankedItem[] {
@@ -111,7 +110,8 @@ function heartbeatBuckets(events: WebEvent[]): HeartbeatBucket[] {
 
 function InterestSignalReview({ events }: { events: WebEvent[] }) {
   const rows = [
-    { label: "Gọi / Zalo / gửi form / hỏi giá", level: "Mạnh", note: "Ý định liên hệ trực tiếp", events: events.filter((event) => CONVERSION_EVENTS.has(event.eventName ?? "")) },
+    { label: "Gọi / Zalo / gửi form", level: "Mạnh", note: "Đã thực hiện hành động liên hệ", events: events.filter((event) => CONVERSION_EVENTS.has(event.eventName ?? "")) },
+    { label: "Nhấp Hỏi giá / mở form", level: "Trung bình", note: "Có quan tâm, chưa phải lead nếu chưa gửi", events: events.filter((event) => event.eventName === "product_inquiry") },
     { label: "Nhấp CTA tư vấn", level: "Trung bình", note: "Có ý định nhưng chưa chắc đã liên hệ", events: events.filter((event) => event.eventName === "cta_click") },
     { label: "Đọc tới 90%", level: "Trung bình", note: "Quan tâm sâu đến nội dung", events: events.filter((event) => event.eventName === "scroll_90") },
     { label: "Ở lại trên 30 giây", level: "Hỗ trợ", note: "Chỉ dùng kèm tín hiệu khác", events: events.filter((event) => event.eventName === "engaged_30s") },
@@ -181,7 +181,7 @@ export default async function AnalyticsDashboard({
   const sessions7 = uniqueSessions(views7);
   const convertingSessions7 = uniqueSessions(conversions7);
   const conversionRate = sessions7 ? convertingSessions7 / sessions7 : 0;
-  const interestEvents7 = last7.filter((event) => CONVERSION_EVENTS.has(event.eventName ?? "") || event.eventName === "cta_click" || event.eventName === "scroll_90" || event.eventName === "engaged_30s");
+  const interestEvents7 = last7.filter((event) => CONVERSION_EVENTS.has(event.eventName ?? "") || event.eventName === "product_inquiry" || event.eventName === "cta_click" || event.eventName === "scroll_90" || event.eventName === "engaged_30s");
   const interestedSessions7 = uniqueSessions(interestEvents7);
 
   const daily = Array.from({ length: 14 }, (_, index) => {
@@ -203,7 +203,7 @@ export default async function AnalyticsDashboard({
       <section className="metric-grid">
         <SummaryCard label="Lượt xem · 7 ngày" value={formatNumber(views7.length)} note="Sự kiện page_view" />
         <SummaryCard label="Phiên truy cập · 7 ngày" value={formatNumber(sessions7)} note="Đếm session ẩn danh" />
-        <SummaryCard label="Phiên có chuyển đổi" value={formatNumber(convertingSessions7)} note="Gọi, Zalo, form hoặc hỏi giá" />
+        <SummaryCard label="Phiên có chuyển đổi" value={formatNumber(convertingSessions7)} note="Gọi, Zalo hoặc gửi form" />
         <SummaryCard label="Tỷ lệ chuyển đổi" value={formatPercent(conversionRate)} note="Phiên chuyển đổi / tổng phiên" />
         <SummaryCard label="Phiên có quan tâm" value={formatNumber(interestedSessions7)} note="CTA, đọc sâu, ở lại hoặc chuyển đổi" />
       </section>
@@ -216,7 +216,7 @@ export default async function AnalyticsDashboard({
         <Ranking title="Nguồn giới thiệu" items={countBy(events, (event) => event.referrerHost ?? (event.eventName === "page_view" ? "Truy cập trực tiếp" : undefined))} />
         <Ranking title="Nguồn chiến dịch UTM" items={countBy(events, (event) => event.utmSource)} />
         <Ranking title="Thiết bị" items={countBy(events.filter((event) => event.eventName === "page_view"), (event) => event.deviceType)} />
-        <Ranking title="CTA được quan tâm" items={countBy(events.filter((event) => CONVERSION_EVENTS.has(event.eventName ?? "") || event.eventName === "cta_click"), (event) => event.label)} />
+        <Ranking title="CTA được quan tâm" items={countBy(events.filter((event) => CONVERSION_EVENTS.has(event.eventName ?? "") || event.eventName === "product_inquiry" || event.eventName === "cta_click"), (event) => event.label)} />
       </section>
     </div></main>
   );
