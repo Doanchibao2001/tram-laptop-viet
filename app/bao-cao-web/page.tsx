@@ -6,6 +6,7 @@ import {
   validAnalyticsCookie,
 } from "@/lib/analytics-auth";
 import { hasSanityWriteToken, sanityServerClient } from "@/sanity/lib/server-client";
+import RealtimeVisitors from "./RealtimeVisitors";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -26,6 +27,9 @@ type WebEvent = {
   utmCampaign?: string;
   deviceType?: string;
   label?: string;
+  country?: string;
+  region?: string;
+  city?: string;
 };
 
 type RankedItem = { label: string; count: number };
@@ -98,7 +102,7 @@ function Ranking({ title, items }: { title: string; items: RankedItem[] }) {
 }
 
 const dashboardCss = `
-  :root{color-scheme:light}.analytics-page{min-height:100vh;background:#f5f6f7;color:#272b2f;font-family:"Be Vietnam Pro",system-ui,sans-serif;padding:42px 20px}.analytics-shell{width:min(1180px,100%);margin:auto}.analytics-head{display:flex;justify-content:space-between;gap:24px;align-items:end;margin-bottom:26px}.analytics-head span{color:#a81020;font-size:12px;font-weight:800;letter-spacing:.12em}.analytics-head h1{font-size:clamp(30px,4vw,48px);line-height:1.1;margin:8px 0}.analytics-head p{color:#62686d;margin:0}.analytics-status{background:#fff;border:1px solid #e3e5e7;border-radius:14px;padding:14px 16px;font-size:12px}.metric-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:14px}.metric-card,.report-panel,.login-card{background:#fff;border:1px solid #e3e5e7;border-radius:16px;box-shadow:0 8px 24px rgba(39,43,47,.05)}.metric-card{padding:20px}.metric-card span,.metric-card small{display:block;color:#747a7f}.metric-card span{font-size:12px;font-weight:700}.metric-card strong{display:block;font-size:30px;margin:8px 0;color:#a81020}.metric-card small{font-size:11px}.report-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;margin-top:16px}.report-panel{padding:22px}.report-panel h2{font-size:18px;margin:0 0 16px}.ranking-list{list-style:none;padding:0;margin:0}.ranking-list li{display:flex;justify-content:space-between;gap:18px;padding:11px 0;border-bottom:1px solid #eceef0;font-size:13px}.ranking-list li:last-child{border-bottom:0}.ranking-list span{overflow-wrap:anywhere}.ranking-list b{color:#a81020}.daily-table{width:100%;border-collapse:collapse;font-size:13px}.daily-table th,.daily-table td{text-align:right;padding:10px;border-bottom:1px solid #eceef0}.daily-table th:first-child,.daily-table td:first-child{text-align:left}.empty-report{color:#777}.login-wrap{min-height:78vh;display:grid;place-items:center}.login-card{width:min(430px,100%);padding:32px}.login-card h1{margin-top:0}.login-card p{color:#62686d;line-height:1.6}.login-card label{display:block;font-size:12px;font-weight:700;margin-bottom:8px}.login-card input{width:100%;height:48px;border:1px solid #d7dadd;border-radius:12px;padding:0 14px;font:inherit}.login-card button{width:100%;height:48px;border:0;border-radius:12px;background:#a81020;color:#fff;font-weight:800;margin-top:12px;cursor:pointer}.login-error{color:#a81020!important;font-weight:700}.setup-note{margin-top:18px;padding:14px;background:#fff7f7;border:1px solid #efd4d7;border-radius:12px;font-size:12px}@media(max-width:900px){.metric-grid{grid-template-columns:repeat(2,1fr)}.report-grid{grid-template-columns:1fr}.analytics-head{align-items:start;flex-direction:column}}@media(max-width:520px){.metric-grid{grid-template-columns:1fr}.analytics-page{padding:26px 14px}}
+  :root{color-scheme:light}.analytics-page{min-height:100vh;background:#f5f6f7;color:#272b2f;font-family:"Be Vietnam Pro",system-ui,sans-serif;padding:42px 20px}.analytics-shell{width:min(1180px,100%);margin:auto}.analytics-head{display:flex;justify-content:space-between;gap:24px;align-items:end;margin-bottom:26px}.analytics-head span{color:#a81020;font-size:12px;font-weight:800;letter-spacing:.12em}.analytics-head h1{font-size:clamp(30px,4vw,48px);line-height:1.1;margin:8px 0}.analytics-head p{color:#62686d;margin:0}.analytics-status{background:#fff;border:1px solid #e3e5e7;border-radius:14px;padding:14px 16px;font-size:12px}.metric-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:14px}.metric-card,.report-panel,.login-card{background:#fff;border:1px solid #e3e5e7;border-radius:16px;box-shadow:0 8px 24px rgba(39,43,47,.05)}.metric-card{padding:20px}.metric-card span,.metric-card small{display:block;color:#747a7f}.metric-card span{font-size:12px;font-weight:700}.metric-card strong{display:block;font-size:30px;margin:8px 0;color:#a81020}.metric-card small{font-size:11px}.report-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;margin-top:16px}.report-panel{padding:22px}.report-panel h2{font-size:18px;margin:0 0 16px}.ranking-list{list-style:none;padding:0;margin:0}.ranking-list li{display:flex;justify-content:space-between;gap:18px;padding:11px 0;border-bottom:1px solid #eceef0;font-size:13px}.ranking-list li:last-child{border-bottom:0}.ranking-list span{overflow-wrap:anywhere}.ranking-list b{color:#a81020}.daily-table{width:100%;border-collapse:collapse;font-size:13px}.daily-table th,.daily-table td{text-align:right;padding:10px;border-bottom:1px solid #eceef0}.daily-table th:first-child,.daily-table td:first-child{text-align:left}.realtime-head{display:flex;align-items:flex-start;justify-content:space-between;gap:18px;margin-bottom:14px}.realtime-head b{font-size:12px;color:#16803c;letter-spacing:.08em}.realtime-head h2{font-size:24px;margin:8px 0 0}.realtime-head small{color:#747a7f}.live-dot{display:inline-block;width:9px;height:9px;border-radius:50%;background:#21a453;box-shadow:0 0 0 5px rgba(33,164,83,.12);margin-right:10px}.realtime-table th,.realtime-table td{text-align:left}.empty-report{color:#777}.login-wrap{min-height:78vh;display:grid;place-items:center}.login-card{width:min(430px,100%);padding:32px}.login-card h1{margin-top:0}.login-card p{color:#62686d;line-height:1.6}.login-card label{display:block;font-size:12px;font-weight:700;margin-bottom:8px}.login-card input{width:100%;height:48px;border:1px solid #d7dadd;border-radius:12px;padding:0 14px;font:inherit}.login-card button{width:100%;height:48px;border:0;border-radius:12px;background:#a81020;color:#fff;font-weight:800;margin-top:12px;cursor:pointer}.login-error{color:#a81020!important;font-weight:700}.setup-note{margin-top:18px;padding:14px;background:#fff7f7;border:1px solid #efd4d7;border-radius:12px;font-size:12px}@media(max-width:900px){.metric-grid{grid-template-columns:repeat(2,1fr)}.report-grid{grid-template-columns:1fr}.analytics-head,.realtime-head{align-items:start;flex-direction:column}}@media(max-width:520px){.metric-grid{grid-template-columns:1fr}.analytics-page{padding:26px 14px}}
 `;
 
 export default async function AnalyticsDashboard({
@@ -130,7 +134,7 @@ export default async function AnalyticsDashboard({
 
   const since = sinceDays(30).toISOString();
   const events = await sanityServerClient.fetch<WebEvent[]>(
-    `*[_type == "webEvent" && occurredAt >= $since] | order(occurredAt desc)[0...10000]{eventName,path,sessionId,occurredAt,referrerHost,utmSource,utmMedium,utmCampaign,deviceType,label}`,
+    `*[_type == "webEvent" && occurredAt >= $since] | order(occurredAt desc)[0...50000]{eventName,path,sessionId,occurredAt,referrerHost,utmSource,utmMedium,utmCampaign,deviceType,label,country,region,city}`,
     { since },
     { cache: "no-store" },
   );
@@ -157,7 +161,7 @@ export default async function AnalyticsDashboard({
 
   return (
     <main className="analytics-page"><style>{dashboardCss}</style><div className="analytics-shell">
-      <header className="analytics-head"><div><span>FIRST-PARTY ANALYTICS</span><h1>Hiệu quả website</h1><p>Dữ liệu 30 ngày gần nhất, không lưu IP hoặc nội dung khách nhập vào biểu mẫu.</p></div><div className="analytics-status">Lưu sự kiện: <b>{hasSanityWriteToken() ? "Đang hoạt động" : "Chưa có SANITY_WRITE_TOKEN"}</b></div></header>
+      <header className="analytics-head"><div><span>FIRST-PARTY ANALYTICS</span><h1>Hiệu quả website</h1><p>Dữ liệu 30 ngày gần nhất; không lưu IP thô hoặc nội dung khách nhập vào biểu mẫu. Khu vực được suy ra gần đúng từ IP.</p></div><div className="analytics-status">Lưu sự kiện: <b>{hasSanityWriteToken() ? "Đang hoạt động" : "Chưa có SANITY_WRITE_TOKEN"}</b></div></header>
       <section className="metric-grid">
         <SummaryCard label="Lượt xem · 7 ngày" value={formatNumber(views7.length)} note="Sự kiện page_view" />
         <SummaryCard label="Phiên truy cập · 7 ngày" value={formatNumber(sessions7)} note="Đếm session ẩn danh" />
@@ -165,11 +169,13 @@ export default async function AnalyticsDashboard({
         <SummaryCard label="Tỷ lệ chuyển đổi" value={formatPercent(conversionRate)} note="Phiên chuyển đổi / tổng phiên" />
         <SummaryCard label="Ở lại trên 30 giây" value={formatNumber(engaged7)} note="Tín hiệu quan tâm nội dung" />
       </section>
+      <RealtimeVisitors />
       <section className="report-grid">
         <Ranking title="Trang được xem nhiều" items={countBy(events.filter((event) => event.eventName === "page_view"), (event) => event.path)} />
         <Ranking title="Hành động chuyển đổi" items={countBy(events.filter((event) => event.eventName && CONVERSION_EVENTS.has(event.eventName)), (event) => event.eventName)} />
         <Ranking title="Nguồn giới thiệu" items={countBy(events, (event) => event.referrerHost ?? (event.eventName === "page_view" ? "Truy cập trực tiếp" : undefined))} />
         <Ranking title="Nguồn chiến dịch UTM" items={countBy(events, (event) => event.utmSource)} />
+        <Ranking title="Khu vực truy cập" items={countBy(events.filter((event) => event.eventName === "page_view"), (event) => [event.city, event.region, event.country].filter(Boolean).join(", ") || undefined)} />
         <Ranking title="Thiết bị" items={countBy(events.filter((event) => event.eventName === "page_view"), (event) => event.deviceType)} />
         <Ranking title="CTA được quan tâm" items={countBy(events.filter((event) => CONVERSION_EVENTS.has(event.eventName ?? "") || event.eventName === "cta_click"), (event) => event.label)} />
       </section>
