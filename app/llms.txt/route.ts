@@ -1,6 +1,6 @@
 import { getNewsArticles } from "@/sanity/lib/content";
 
-export const revalidate = 300;
+export const dynamic = "force-dynamic";
 
 const siteUrl = (
   process.env.NEXT_PUBLIC_SITE_URL ?? "https://tramlaptopviet.vn"

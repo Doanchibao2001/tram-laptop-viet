@@ -5,6 +5,8 @@ const siteUrl = (
   process.env.NEXT_PUBLIC_SITE_URL ?? "https://tramlaptopviet.vn"
 ).replace(/\/+$/, "");
 
+export const dynamic = "force-dynamic";
+
 function validDate(value: string): Date | undefined {
   const parsed = new Date(`${value}T08:00:00+07:00`);
   return Number.isNaN(parsed.getTime()) ? undefined : parsed;

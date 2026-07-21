@@ -79,7 +79,6 @@ const NEWS_PROJECTION = `
 const PUBLISHED_ARTICLE_FILTER = `
   _type in ["article", "post", "newsArticle"]
   && defined(slug.current)
-  && (!defined(publishedAt) || publishedAt <= now())
 `;
 
 export const NEWS_ARTICLES_QUERY = defineQuery(`

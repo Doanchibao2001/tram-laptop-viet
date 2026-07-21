@@ -6,5 +6,7 @@ export const client = createClient({
   dataset,
   apiVersion,
   perspective: "published",
-  useCdn: true,
+  // Read the published Content Lake directly so an editor's changes are not
+  // hidden behind the previous CDN snapshot.
+  useCdn: false,
 });

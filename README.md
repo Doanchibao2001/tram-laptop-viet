@@ -70,7 +70,7 @@ NEXT_PUBLIC_SANITY_API_VERSION=2026-07-20
 
 ## Quản trị nội dung bằng Sanity
 
-Website đọc sản phẩm, bài viết, SEO, hình ảnh, địa chỉ, hotline, hero và popup từ Sanity rồi tự làm mới sau khoảng 60 giây. Dữ liệu dự phòng cục bộ chỉ được dùng khi truy vấn Sanity lỗi; một danh sách đã xuất bản nhưng rỗng được tôn trọng là danh sách rỗng để quản trị viên có thể chủ động ẩn toàn bộ sản phẩm hoặc bài viết.
+Website đọc trực tiếp nội dung đã xuất bản gồm sản phẩm, bài viết, SEO, hình ảnh, địa chỉ, hotline, hero và popup từ Sanity trên mỗi lượt truy cập. Vì vậy nội dung mới không phụ thuộc cache của Vercel hoặc webhook làm mới. Trường `publishedAt` dùng làm ngày hiển thị và sắp xếp; thao tác **Publish** trong Studio quyết định bài có xuất hiện trên website hay không. Dữ liệu dự phòng cục bộ chỉ được dùng khi truy vấn Sanity lỗi; một danh sách đã xuất bản nhưng rỗng được tôn trọng là danh sách rỗng để quản trị viên có thể chủ động ẩn toàn bộ sản phẩm hoặc bài viết.
 
 Sanity Studio được giữ thành một dự án độc lập, nằm cạnh ứng dụng này. Chỉ nội dung đã **Publish** mới xuất hiện trên website công khai.
 

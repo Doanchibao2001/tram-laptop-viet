@@ -12,7 +12,7 @@ export const metadata: Metadata = {
   openGraph: { type: "website", locale: "vi_VN", url: "/tin-tuc", title: "Tin tức laptop | Trạm Laptop Việt", description: "Hướng dẫn sử dụng, sửa chữa và nâng cấp laptop hữu ích.", images: [{ url: "/tram-laptop-viet/brand-banner.jpg", alt: "Tin tức Trạm Laptop Việt" }] },
 };
 
-export const revalidate = 60;
+export const dynamic = "force-dynamic";
 
 export default async function NewsPage() {
   const [newsArticles, siteSettings] = await Promise.all([

@@ -14,7 +14,9 @@ import {
   SITE_SETTINGS_QUERY,
 } from "./queries";
 
-const fetchOptions = { next: { revalidate: 60 } } as const;
+// Published content is the source of truth. Avoid retaining build-time data in
+// Vercel when a Sanity webhook or environment secret is not configured yet.
+const fetchOptions = { cache: "no-store" } as const;
 
 type ImageSource = Parameters<typeof urlFor>[0];
 
