@@ -397,3 +397,4 @@ select{font-family:var(--font-be-vietnam-pro),Inter,sans-serif}
   50%{transform:scale(1.035);box-shadow:0 11px 30px rgba(200,16,32,.4)}
 }
 .category-panel .category-title{margin:0;padding:16px 17px;font-size:13px;font-weight:700;text-transform:uppercase;border-bottom:1px solid var(--line);background:#171717;color:#fff}
+.footer-grid .footer-heading{display:block;font-size:12px;line-height:normal;text-transform:uppercase;color:#fff;margin:0 0 16px;font-weight:700}
