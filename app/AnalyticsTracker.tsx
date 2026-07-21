@@ -155,12 +155,11 @@ export default function AnalyticsTracker() {
       });
     };
 
-    const onSubmit = (event: SubmitEvent) => {
-      const form = event.target as HTMLFormElement | null;
-      if (!form) return;
+    const onLeadSubmitted = (event: Event) => {
+      const detail = (event as CustomEvent<{ source?: string }>).detail;
       sendEvent("form_submit", {
-        label: form.getAttribute("aria-label") ?? form.id ?? form.className,
-        target: form.action || window.location.pathname,
+        label: detail?.source ?? "website-form",
+        target: window.location.pathname,
       });
     };
 
@@ -186,7 +185,7 @@ export default function AnalyticsTracker() {
     const heartbeatTimer = window.setInterval(heartbeat, 30_000);
     document.addEventListener("visibilitychange", heartbeat);
     document.addEventListener("click", onClick, true);
-    document.addEventListener("submit", onSubmit, true);
+    window.addEventListener("tram:lead-submitted", onLeadSubmitted);
     window.addEventListener("scroll", onScroll, { passive: true });
 
     return () => {
@@ -194,7 +193,7 @@ export default function AnalyticsTracker() {
       window.clearInterval(heartbeatTimer);
       document.removeEventListener("visibilitychange", heartbeat);
       document.removeEventListener("click", onClick, true);
-      document.removeEventListener("submit", onSubmit, true);
+      window.removeEventListener("tram:lead-submitted", onLeadSubmitted);
       window.removeEventListener("scroll", onScroll);
     };
   }, [pathname]);
