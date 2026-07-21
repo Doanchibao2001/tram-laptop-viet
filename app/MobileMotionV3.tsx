@@ -59,8 +59,8 @@ export default function MobileMotionV3() {
             processObserver?.disconnect();
           },
           {
-            threshold: 0.16,
-            rootMargin: "0px 0px -6% 0px",
+            threshold: 0.14,
+            rootMargin: "0px 0px -4% 0px",
           },
         );
         processObserver.observe(processSection);
@@ -79,8 +79,8 @@ export default function MobileMotionV3() {
           });
         },
         {
-          threshold: 0.12,
-          rootMargin: "0px 0px -4% 0px",
+          threshold: 0.1,
+          rootMargin: "0px 0px -2% 0px",
         },
       );
       revealSections.forEach((section) => sectionObserver?.observe(section));
@@ -100,19 +100,23 @@ export default function MobileMotionV3() {
         });
     };
 
+    const handleSubmit = (event: SubmitEvent) => {
+      const form = event.target;
+      if (!(form instanceof HTMLFormElement)) return;
+      if (!form.matches(".consult form, .consult-popup form")) return;
+      window.requestAnimationFrame(() => {
+        window.requestAnimationFrame(syncSubmitButtons);
+      });
+    };
+
     syncSubmitButtons();
-    const submitObserver = new MutationObserver(syncSubmitButtons);
-    submitObserver.observe(document.body, {
-      childList: true,
-      subtree: true,
-      characterData: true,
-    });
+    document.addEventListener("submit", handleSubmit, true);
 
     return () => {
       heroImage?.removeEventListener("load", revealHero);
       processObserver?.disconnect();
       sectionObserver?.disconnect();
-      submitObserver.disconnect();
+      document.removeEventListener("submit", handleSubmit, true);
       root.classList.remove(styles.root, styles.loaded);
       processSection?.classList.remove(styles.processVisible);
       revealSections.forEach((section) =>
