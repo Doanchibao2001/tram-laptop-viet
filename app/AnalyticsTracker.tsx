@@ -22,6 +22,7 @@ type EventDetails = {
 };
 
 const SESSION_KEY = "tlv_analytics_session";
+const VISITOR_KEY = "tlv_analytics_visitor";
 const CAMPAIGN_KEY = "tlv_analytics_campaign";
 const SKIPPED_PATHS = ["/bao-cao-web", "/api/", "/studio", "/__debug"];
 
@@ -30,6 +31,14 @@ function sessionId(): string {
   if (existing) return existing;
   const id = globalThis.crypto?.randomUUID?.() ?? `${Date.now()}-${Math.random().toString(36).slice(2)}`;
   window.sessionStorage.setItem(SESSION_KEY, id);
+  return id;
+}
+
+function visitorId(): string {
+  const existing = window.localStorage.getItem(VISITOR_KEY);
+  if (existing) return existing;
+  const id = globalThis.crypto?.randomUUID?.() ?? `${Date.now()}-${Math.random().toString(36).slice(2)}`;
+  window.localStorage.setItem(VISITOR_KEY, id);
   return id;
 }
 
@@ -72,6 +81,7 @@ function sendEvent(eventName: EventName, details: EventDetails = {}) {
     label: details.label,
     target: details.target,
     sessionId: sessionId(),
+    visitorId: visitorId(),
     referrerHost: referrerHost(),
     ...campaign(searchParams),
     viewportWidth: window.innerWidth,
