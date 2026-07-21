@@ -1,4 +1,5 @@
 import HomeClient from "./HomeClient";
+import MobileMotionV3 from "./MobileMotionV3";
 import { getProducts, getSiteSettings } from "@/sanity/lib/content";
 
 export const dynamic = "force-dynamic";
@@ -9,5 +10,10 @@ export default async function Home() {
     getSiteSettings(),
   ]);
 
-  return <HomeClient products={products} siteSettings={siteSettings} />;
+  return (
+    <>
+      <MobileMotionV3 />
+      <HomeClient products={products} siteSettings={siteSettings} />
+    </>
+  );
 }
