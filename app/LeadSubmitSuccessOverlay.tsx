@@ -3,21 +3,14 @@
 import { useEffect, useState } from "react";
 import styles from "./LeadSubmitSuccessOverlay.module.css";
 
-const FACEBOOK_MOBILE_WEB_URL =
-  "https://m.facebook.com/profile.php?id=61591726413298";
-const REDIRECT_DELAY_MS = 3200;
+const FACEBOOK_UNIVERSAL_LINK =
+  "https://www.facebook.com/profile.php?id=61591726413298";
 const LEAD_FORM_SELECTOR = ".consult form, .consult-popup form";
 
 export default function LeadSubmitSuccessOverlay() {
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
-    let redirectTimer = 0;
-
-    const redirectToFacebook = () => {
-      window.location.replace(FACEBOOK_MOBILE_WEB_URL);
-    };
-
     const handleSubmit = (event: SubmitEvent) => {
       const form = event.target;
       if (!(form instanceof HTMLFormElement)) return;
@@ -41,15 +34,12 @@ export default function LeadSubmitSuccessOverlay() {
 
       form.reset();
       setVisible(true);
-      window.clearTimeout(redirectTimer);
-      redirectTimer = window.setTimeout(redirectToFacebook, REDIRECT_DELAY_MS);
     };
 
     document.addEventListener("submit", handleSubmit, true);
 
     return () => {
       document.removeEventListener("submit", handleSubmit, true);
-      window.clearTimeout(redirectTimer);
     };
   }, []);
 
@@ -90,20 +80,16 @@ export default function LeadSubmitSuccessOverlay() {
 
         <div className={styles.redirectNotice} aria-live="polite">
           <div className={styles.redirectLine}>
-            <span className={styles.spinner} aria-hidden="true" />
-            <span>Đang chuyển tới Fanpage Trạm Laptop Việt…</span>
-          </div>
-          <div className={styles.progress} aria-hidden="true">
-            <i />
+            <span>Chạm nút bên dưới để mở Fanpage trong ứng dụng Facebook.</span>
           </div>
         </div>
 
         <button
           type="button"
           className={styles.facebookButton}
-          onClick={() => window.location.replace(FACEBOOK_MOBILE_WEB_URL)}
+          onClick={() => window.location.assign(FACEBOOK_UNIVERSAL_LINK)}
         >
-          Đi tới Fanpage ngay
+          Mở Fanpage trong Facebook
         </button>
         <small>Không cần gửi lại yêu cầu.</small>
       </section>
