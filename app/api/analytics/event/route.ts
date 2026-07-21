@@ -34,6 +34,7 @@ type AnalyticsPayload = {
   label?: unknown;
   target?: unknown;
   sessionId?: unknown;
+  visitorId?: unknown;
   referrerHost?: unknown;
   utmSource?: unknown;
   utmMedium?: unknown;
@@ -173,6 +174,7 @@ export async function POST(request: NextRequest) {
       label: shortText(payload.label, 180),
       target: shortText(payload.target, 300),
       sessionId,
+      visitorId: shortText(payload.visitorId, 80),
       referrerHost: shortText(payload.referrerHost, 160),
       utmSource: shortText(payload.utmSource, 120),
       utmMedium: shortText(payload.utmMedium, 120),

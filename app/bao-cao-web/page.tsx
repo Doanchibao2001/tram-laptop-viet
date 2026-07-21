@@ -7,6 +7,7 @@ import {
 } from "@/lib/analytics-auth";
 import { hasSanityWriteToken, sanityServerClient } from "@/sanity/lib/server-client";
 import RealtimeVisitors from "./RealtimeVisitors";
+import AnalyticsInsights, { type VisitorSummary } from "./AnalyticsInsights";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -30,6 +31,8 @@ type WebEvent = {
   country?: string;
   region?: string;
   city?: string;
+  ipHash?: string;
+  visitorId?: string;
 };
 
 type RankedItem = { label: string; count: number };
@@ -84,6 +87,39 @@ function recent(events: WebEvent[], days: number): WebEvent[] {
   });
 }
 
+function eventSource(event: WebEvent): string {
+  if (event.utmSource) return event.utmMedium ? `${event.utmSource} / ${event.utmMedium}` : event.utmSource;
+  return event.referrerHost || "Truy cập trực tiếp";
+}
+
+function visitorSummaries(events: WebEvent[]): VisitorSummary[] {
+  const groups = new Map<string, WebEvent[]>();
+  for (const event of events.filter((item) => item.eventName === "page_view")) {
+    const id = event.visitorId || event.sessionId;
+    if (!id) continue;
+    const current = groups.get(id) ?? [];
+    current.push(event);
+    groups.set(id, current);
+  }
+  return [...groups.entries()].map(([id, visits]) => {
+    const ordered = [...visits].sort((a, b) => String(a.occurredAt).localeCompare(String(b.occurredAt)));
+    const first = ordered[0];
+    const last = ordered[ordered.length - 1];
+    const sessions = new Set(visits.map((visit) => visit.sessionId).filter(Boolean)).size;
+    return {
+      id,
+      ipHash: last.ipHash,
+      sessions,
+      pageViews: visits.length,
+      firstSeen: first.occurredAt || "",
+      lastSeen: last.occurredAt || "",
+      location: [last.city, last.region, last.country].filter(Boolean).join(", ") || "Không xác định",
+      source: eventSource(first),
+      returning: Boolean(first.visitorId && sessions > 1),
+    };
+  }).sort((a, b) => b.lastSeen.localeCompare(a.lastSeen));
+}
+
 function SummaryCard({ label, value, note }: { label: string; value: string; note: string }) {
   return <article className="metric-card"><span>{label}</span><strong>{value}</strong><small>{note}</small></article>;
 }
@@ -102,7 +138,7 @@ function Ranking({ title, items }: { title: string; items: RankedItem[] }) {
 }
 
 const dashboardCss = `
-  :root{color-scheme:light}.analytics-page{min-height:100vh;background:#f5f6f7;color:#272b2f;font-family:"Be Vietnam Pro",system-ui,sans-serif;padding:42px 20px}.analytics-shell{width:min(1180px,100%);margin:auto}.analytics-head{display:flex;justify-content:space-between;gap:24px;align-items:end;margin-bottom:26px}.analytics-head span{color:#a81020;font-size:12px;font-weight:800;letter-spacing:.12em}.analytics-head h1{font-size:clamp(30px,4vw,48px);line-height:1.1;margin:8px 0}.analytics-head p{color:#62686d;margin:0}.analytics-status{background:#fff;border:1px solid #e3e5e7;border-radius:14px;padding:14px 16px;font-size:12px}.metric-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:14px}.metric-card,.report-panel,.login-card{background:#fff;border:1px solid #e3e5e7;border-radius:16px;box-shadow:0 8px 24px rgba(39,43,47,.05)}.metric-card{padding:20px}.metric-card span,.metric-card small{display:block;color:#747a7f}.metric-card span{font-size:12px;font-weight:700}.metric-card strong{display:block;font-size:30px;margin:8px 0;color:#a81020}.metric-card small{font-size:11px}.report-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;margin-top:16px}.report-panel{padding:22px}.report-panel h2{font-size:18px;margin:0 0 16px}.ranking-list{list-style:none;padding:0;margin:0}.ranking-list li{display:flex;justify-content:space-between;gap:18px;padding:11px 0;border-bottom:1px solid #eceef0;font-size:13px}.ranking-list li:last-child{border-bottom:0}.ranking-list span{overflow-wrap:anywhere}.ranking-list b{color:#a81020}.daily-table{width:100%;border-collapse:collapse;font-size:13px}.daily-table th,.daily-table td{text-align:right;padding:10px;border-bottom:1px solid #eceef0}.daily-table th:first-child,.daily-table td:first-child{text-align:left}.realtime-head{display:flex;align-items:flex-start;justify-content:space-between;gap:18px;margin-bottom:14px}.realtime-head b{font-size:12px;color:#16803c;letter-spacing:.08em}.realtime-head h2{font-size:24px;margin:8px 0 0}.realtime-head small{color:#747a7f}.live-dot{display:inline-block;width:9px;height:9px;border-radius:50%;background:#21a453;box-shadow:0 0 0 5px rgba(33,164,83,.12);margin-right:10px}.realtime-table th,.realtime-table td{text-align:left}.empty-report{color:#777}.login-wrap{min-height:78vh;display:grid;place-items:center}.login-card{width:min(430px,100%);padding:32px}.login-card h1{margin-top:0}.login-card p{color:#62686d;line-height:1.6}.login-card label{display:block;font-size:12px;font-weight:700;margin-bottom:8px}.login-card input{width:100%;height:48px;border:1px solid #d7dadd;border-radius:12px;padding:0 14px;font:inherit}.login-card button{width:100%;height:48px;border:0;border-radius:12px;background:#a81020;color:#fff;font-weight:800;margin-top:12px;cursor:pointer}.login-error{color:#a81020!important;font-weight:700}.setup-note{margin-top:18px;padding:14px;background:#fff7f7;border:1px solid #efd4d7;border-radius:12px;font-size:12px}@media(max-width:900px){.metric-grid{grid-template-columns:repeat(2,1fr)}.report-grid{grid-template-columns:1fr}.analytics-head,.realtime-head{align-items:start;flex-direction:column}}@media(max-width:520px){.metric-grid{grid-template-columns:1fr}.analytics-page{padding:26px 14px}}
+  :root{color-scheme:light}.analytics-page{min-height:100vh;background:#f5f6f7;color:#272b2f;font-family:"Be Vietnam Pro",system-ui,sans-serif;padding:42px 20px}.analytics-shell{width:min(1180px,100%);margin:auto}.analytics-head{display:flex;justify-content:space-between;gap:24px;align-items:end;margin-bottom:26px}.analytics-head span,.trend-heading>div>span,.visitor-head>div>span{color:#a81020;font-size:12px;font-weight:800;letter-spacing:.12em}.analytics-head h1{font-size:clamp(30px,4vw,48px);line-height:1.1;margin:8px 0}.analytics-head p{color:#62686d;margin:0}.analytics-status{background:#fff;border:1px solid #e3e5e7;border-radius:14px;padding:14px 16px;font-size:12px}.metric-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:14px}.metric-card,.report-panel,.login-card{background:#fff;border:1px solid #e3e5e7;border-radius:16px;box-shadow:0 8px 24px rgba(39,43,47,.05)}.metric-card{padding:20px}.metric-card span,.metric-card small{display:block;color:#747a7f}.metric-card span{font-size:12px;font-weight:700}.metric-card strong{display:block;font-size:30px;margin:8px 0;color:#a81020}.metric-card small{font-size:11px}.report-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;margin-top:16px}.report-panel{padding:22px}.report-panel h2{font-size:18px;margin:0 0 16px}.ranking-list{list-style:none;padding:0;margin:0}.ranking-list li{display:flex;justify-content:space-between;gap:18px;padding:11px 0;border-bottom:1px solid #eceef0;font-size:13px}.ranking-list li:last-child{border-bottom:0}.ranking-list span{overflow-wrap:anywhere}.ranking-list b{color:#a81020}.daily-table{width:100%;border-collapse:collapse;font-size:13px}.daily-table th,.daily-table td{text-align:right;padding:10px;border-bottom:1px solid #eceef0}.daily-table th:first-child,.daily-table td:first-child{text-align:left}.realtime-head,.trend-heading,.visitor-head{display:flex;align-items:flex-start;justify-content:space-between;gap:18px;margin-bottom:14px}.realtime-head b{font-size:12px;color:#16803c;letter-spacing:.08em}.realtime-head h2{font-size:24px;margin:8px 0 0}.realtime-head small{color:#747a7f}.live-dot{display:inline-block;width:9px;height:9px;border-radius:50%;background:#21a453;box-shadow:0 0 0 5px rgba(33,164,83,.12);margin-right:10px;animation:pulse 1.4s infinite}.realtime-table th,.realtime-table td{text-align:left}.trend-panel,.visitor-panel{margin-top:16px}.trend-heading h2,.visitor-head h2{font-size:24px;margin:7px 0}.chart-legend{display:flex;gap:16px;flex-wrap:wrap;font-size:12px}.chart-legend span{display:flex;align-items:center;gap:7px}.chart-legend i{width:20px;height:4px;border-radius:10px}.chart-wrap{width:100%;overflow-x:auto}.chart-wrap svg{display:block;width:100%;min-width:680px;height:auto}.visitor-head p{margin:0;color:#747a7f;font-size:12px}.visitor-totals{text-align:right}.visitor-totals b{display:block;color:#a81020;font-size:30px}.visitor-totals small{color:#747a7f}.visitor-filters{display:grid;grid-template-columns:2fr 1fr auto;gap:10px;align-items:center;margin:18px 0 10px}.visitor-filters input,.visitor-filters select{height:44px;border:1px solid #d7dadd;border-radius:10px;padding:0 12px;background:#fff;font:inherit}.visitor-filters label{font-size:12px;font-weight:700;white-space:nowrap}.visitor-result{font-size:12px;color:#747a7f;margin-bottom:8px}.visitor-table th,.visitor-table td{text-align:left;white-space:nowrap}.visitor-table code{font-size:11px;background:#f1f2f3;border-radius:6px;padding:4px 6px}.returning-badge,.new-badge{display:inline-block;padding:4px 8px;border-radius:999px;font-size:11px;font-weight:800}.returning-badge{background:#e5f6eb;color:#16743c}.new-badge{background:#f1f2f3;color:#62686d}.empty-report{color:#777}.login-wrap{min-height:78vh;display:grid;place-items:center}.login-card{width:min(430px,100%);padding:32px}.login-card h1{margin-top:0}.login-card p{color:#62686d;line-height:1.6}.login-card label{display:block;font-size:12px;font-weight:700;margin-bottom:8px}.login-card input{width:100%;height:48px;border:1px solid #d7dadd;border-radius:12px;padding:0 14px;font:inherit}.login-card button{width:100%;height:48px;border:0;border-radius:12px;background:#a81020;color:#fff;font-weight:800;margin-top:12px;cursor:pointer}.login-error{color:#a81020!important;font-weight:700}.setup-note{margin-top:18px;padding:14px;background:#fff7f7;border:1px solid #efd4d7;border-radius:12px;font-size:12px}@keyframes pulse{0%,100%{box-shadow:0 0 0 4px rgba(33,164,83,.12)}50%{box-shadow:0 0 0 9px rgba(33,164,83,.03)}}@media(max-width:900px){.metric-grid{grid-template-columns:repeat(2,1fr)}.report-grid{grid-template-columns:1fr}.analytics-head,.realtime-head,.trend-heading,.visitor-head{align-items:start;flex-direction:column}.visitor-filters{grid-template-columns:1fr}}@media(max-width:520px){.metric-grid{grid-template-columns:1fr}.analytics-page{padding:26px 14px}}
 `;
 
 export default async function AnalyticsDashboard({
@@ -134,7 +170,7 @@ export default async function AnalyticsDashboard({
 
   const since = sinceDays(30).toISOString();
   const events = await sanityServerClient.fetch<WebEvent[]>(
-    `*[_type == "webEvent" && occurredAt >= $since] | order(occurredAt desc)[0...50000]{eventName,path,sessionId,occurredAt,referrerHost,utmSource,utmMedium,utmCampaign,deviceType,label,country,region,city}`,
+    `*[_type == "webEvent" && occurredAt >= $since] | order(occurredAt desc)[0...50000]{eventName,path,sessionId,visitorId,occurredAt,referrerHost,utmSource,utmMedium,utmCampaign,deviceType,label,country,region,city,ipHash}`,
     { since },
     { cache: "no-store" },
   );
@@ -170,6 +206,7 @@ export default async function AnalyticsDashboard({
         <SummaryCard label="Ở lại trên 30 giây" value={formatNumber(engaged7)} note="Tín hiệu quan tâm nội dung" />
       </section>
       <RealtimeVisitors />
+      <AnalyticsInsights daily={daily} visitors={visitorSummaries(events)} />
       <section className="report-grid">
         <Ranking title="Trang được xem nhiều" items={countBy(events.filter((event) => event.eventName === "page_view"), (event) => event.path)} />
         <Ranking title="Hành động chuyển đổi" items={countBy(events.filter((event) => event.eventName && CONVERSION_EVENTS.has(event.eventName)), (event) => event.eventName)} />
@@ -179,7 +216,6 @@ export default async function AnalyticsDashboard({
         <Ranking title="Thiết bị" items={countBy(events.filter((event) => event.eventName === "page_view"), (event) => event.deviceType)} />
         <Ranking title="CTA được quan tâm" items={countBy(events.filter((event) => CONVERSION_EVENTS.has(event.eventName ?? "") || event.eventName === "cta_click"), (event) => event.label)} />
       </section>
-      <section className="report-panel" style={{ marginTop: 16 }}><h2>Diễn biến 14 ngày</h2><div style={{ overflowX: "auto" }}><table className="daily-table"><thead><tr><th>Ngày</th><th>Lượt xem</th><th>Phiên</th><th>Chuyển đổi</th></tr></thead><tbody>{daily.map((row) => <tr key={row.key}><td>{row.key.split("-").reverse().join("/")}</td><td>{formatNumber(row.views)}</td><td>{formatNumber(row.sessions)}</td><td>{formatNumber(row.leads)}</td></tr>)}</tbody></table></div></section>
     </div></main>
   );
 }
