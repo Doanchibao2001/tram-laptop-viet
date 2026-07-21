@@ -6,6 +6,16 @@ import styles from "./MobileMotionV3.module.css";
 const SUBMIT_BUTTON_SELECTOR =
   ".consult form button, .consult-popup form button";
 
+const REVEAL_SECTION_SELECTOR = [
+  ".brand-showcase",
+  ".trust-strip",
+  ".services",
+  ".products",
+  ".locations",
+  ".seo-section",
+  ".consult",
+].join(",");
+
 function isSuccessfulSubmit(button: HTMLButtonElement): boolean {
   return button.textContent?.trim().startsWith("Đã") ?? false;
 }
@@ -15,11 +25,15 @@ export default function MobileMotionV3() {
     const root = document.documentElement;
     const heroImage = document.querySelector<HTMLImageElement>(".hero-photo");
     const processSection = document.querySelector<HTMLElement>(".process");
+    const revealSections = Array.from(
+      document.querySelectorAll<HTMLElement>(REVEAL_SECTION_SELECTOR),
+    );
     const reduceMotion = window.matchMedia(
       "(prefers-reduced-motion: reduce)",
     ).matches;
 
     root.classList.add(styles.root);
+    revealSections.forEach((section) => section.classList.add(styles.revealSection));
 
     const revealHero = () => {
       window.requestAnimationFrame(() => root.classList.add(styles.loaded));
@@ -32,6 +46,8 @@ export default function MobileMotionV3() {
     }
 
     let processObserver: IntersectionObserver | undefined;
+    let sectionObserver: IntersectionObserver | undefined;
+
     if (processSection) {
       if (reduceMotion || !("IntersectionObserver" in window)) {
         processSection.classList.add(styles.processVisible);
@@ -43,12 +59,31 @@ export default function MobileMotionV3() {
             processObserver?.disconnect();
           },
           {
-            threshold: 0.18,
-            rootMargin: "0px 0px -8% 0px",
+            threshold: 0.16,
+            rootMargin: "0px 0px -6% 0px",
           },
         );
         processObserver.observe(processSection);
       }
+    }
+
+    if (reduceMotion || !("IntersectionObserver" in window)) {
+      revealSections.forEach((section) => section.classList.add(styles.revealVisible));
+    } else {
+      sectionObserver = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (!entry.isIntersecting) return;
+            entry.target.classList.add(styles.revealVisible);
+            sectionObserver?.unobserve(entry.target);
+          });
+        },
+        {
+          threshold: 0.12,
+          rootMargin: "0px 0px -4% 0px",
+        },
+      );
+      revealSections.forEach((section) => sectionObserver?.observe(section));
     }
 
     const syncSubmitButtons = () => {
@@ -76,9 +111,13 @@ export default function MobileMotionV3() {
     return () => {
       heroImage?.removeEventListener("load", revealHero);
       processObserver?.disconnect();
+      sectionObserver?.disconnect();
       submitObserver.disconnect();
       root.classList.remove(styles.root, styles.loaded);
       processSection?.classList.remove(styles.processVisible);
+      revealSections.forEach((section) =>
+        section.classList.remove(styles.revealSection, styles.revealVisible),
+      );
       document
         .querySelectorAll<HTMLButtonElement>(SUBMIT_BUTTON_SELECTOR)
         .forEach((button) => {
