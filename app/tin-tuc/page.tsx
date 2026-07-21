@@ -1,9 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { getNewsArticles, getSiteSettings } from "@/sanity/lib/content";
+import { siteUrl } from "@/lib/site-url";
 import { NewsFooter, NewsHeader } from "./NewsChrome";
-
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://tramlaptopviet.vn";
 
 export const metadata: Metadata = {
   title: "Tin tức sửa chữa và chăm sóc laptop",

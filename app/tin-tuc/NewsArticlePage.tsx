@@ -9,11 +9,10 @@ import {
 } from "next-sanity";
 import type { ReactNode } from "react";
 import { urlFor } from "@/sanity/lib/image";
+import { siteUrl } from "@/lib/site-url";
 import type { SiteSettings } from "@/sanity/types";
 import { NewsFooter, NewsHeader } from "./NewsChrome";
 import type { NewsArticle } from "./news-data";
-
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://tramlaptopviet.vn";
 
 type PortableImage = {
   _type: string;

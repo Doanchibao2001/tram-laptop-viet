@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Suspense } from "react";
 import { getSiteFaviconUrl } from "@/sanity/lib/site-metadata";
+import { siteUrl } from "@/lib/site-url";
 import AnalyticsTracker from "./AnalyticsTracker";
 import "./globals.css";
 import "./process-fix.css";
@@ -9,7 +10,6 @@ import "./modern-ui.css";
 import "./header-brand-fix.css";
 import "./palette-soft.css";
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://tramlaptopviet.vn";
 const googleSiteVerification = process.env.GOOGLE_SITE_VERIFICATION;
 const title = "Sửa laptop & MacBook uy tín tại TP.HCM | Trạm Laptop Việt";
 const description = "Trạm Laptop Việt sửa chữa, nâng cấp và bảo hành laptop, MacBook tại TP.HCM: kiểm tra đúng lỗi, báo giá trước khi sửa và bảo hành minh bạch.";
