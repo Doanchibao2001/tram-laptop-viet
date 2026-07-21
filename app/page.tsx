@@ -1,4 +1,5 @@
 import HomeClient from "./HomeClient";
+import LeadSubmitSuccessOverlay from "./LeadSubmitSuccessOverlay";
 import MobileMotionV3 from "./MobileMotionV3";
 import { getProducts, getSiteSettings } from "@/sanity/lib/content";
 
@@ -12,6 +13,7 @@ export default async function Home() {
 
   return (
     <>
+      <LeadSubmitSuccessOverlay />
       <MobileMotionV3 />
       <HomeClient products={products} siteSettings={siteSettings} />
     </>
