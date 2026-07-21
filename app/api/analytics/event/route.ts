@@ -16,6 +16,7 @@ const ALLOWED_EVENTS = new Set([
   "scroll_50",
   "scroll_90",
   "engaged_30s",
+  "heartbeat",
 ]);
 
 const BOT_PATTERN = /bot|crawler|spider|crawling|headless|lighthouse|pagespeed|google-inspectiontool|bingpreview/i;

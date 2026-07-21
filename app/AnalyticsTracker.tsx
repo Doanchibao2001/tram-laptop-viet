@@ -13,7 +13,8 @@ type EventName =
   | "navigation_click"
   | "scroll_50"
   | "scroll_90"
-  | "engaged_30s";
+  | "engaged_30s"
+  | "heartbeat";
 
 type EventDetails = {
   label?: string;
@@ -169,12 +170,19 @@ export default function AnalyticsTracker() {
     };
 
     const engagedTimer = window.setTimeout(() => sendEvent("engaged_30s"), 30_000);
+    const heartbeat = () => {
+      if (document.visibilityState === "visible") sendEvent("heartbeat");
+    };
+    const heartbeatTimer = window.setInterval(heartbeat, 30_000);
+    document.addEventListener("visibilitychange", heartbeat);
     document.addEventListener("click", onClick, true);
     document.addEventListener("submit", onSubmit, true);
     window.addEventListener("scroll", onScroll, { passive: true });
 
     return () => {
       window.clearTimeout(engagedTimer);
+      window.clearInterval(heartbeatTimer);
+      document.removeEventListener("visibilitychange", heartbeat);
       document.removeEventListener("click", onClick, true);
       document.removeEventListener("submit", onSubmit, true);
       window.removeEventListener("scroll", onScroll);
