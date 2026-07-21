@@ -3,7 +3,8 @@
 import { useEffect, useState } from "react";
 import styles from "./LeadSubmitSuccessOverlay.module.css";
 
-const FACEBOOK_REDIRECT_PATH = "/go/fanpage";
+const FACEBOOK_MOBILE_WEB_URL =
+  "https://m.facebook.com/profile.php?id=61591726413298";
 const REDIRECT_DELAY_MS = 3200;
 const LEAD_FORM_SELECTOR = ".consult form, .consult-popup form";
 
@@ -14,7 +15,7 @@ export default function LeadSubmitSuccessOverlay() {
     let redirectTimer = 0;
 
     const redirectToFacebook = () => {
-      window.location.replace(FACEBOOK_REDIRECT_PATH);
+      window.location.replace(FACEBOOK_MOBILE_WEB_URL);
     };
 
     const handleSubmit = (event: SubmitEvent) => {
@@ -100,7 +101,7 @@ export default function LeadSubmitSuccessOverlay() {
         <button
           type="button"
           className={styles.facebookButton}
-          onClick={() => window.location.replace(FACEBOOK_REDIRECT_PATH)}
+          onClick={() => window.location.replace(FACEBOOK_MOBILE_WEB_URL)}
         >
           Đi tới Fanpage ngay
         </button>
