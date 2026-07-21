@@ -1,9 +1,6 @@
 import type { MetadataRoute } from "next";
 import { getNewsArticles } from "@/sanity/lib/content";
-
-const siteUrl = (
-  process.env.NEXT_PUBLIC_SITE_URL ?? "https://tramlaptopviet.vn"
-).replace(/\/+$/, "");
+import { siteUrl } from "@/lib/site-url";
 
 export const dynamic = "force-dynamic";
 

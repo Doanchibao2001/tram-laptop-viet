@@ -20,7 +20,7 @@ the dashboard remains locked and reports that configuration is incomplete.
 
 Create a Sanity webhook that fires when documents are created or updated.
 
-- URL: `https://tramlaptopviet.vn/api/sanity/seo`
+- URL: `https://www.tramlaptopviet.vn/api/sanity/seo`
 - Method: `POST`
 - Filter: `_type in ["article", "post", "newsArticle"]`
 - Projection:
@@ -62,7 +62,7 @@ A manually entered Sanity slug always wins and is never overwritten.
 Send an authenticated `PUT` request to the same endpoint. It patches up to 200 published articles in one run.
 
 ```bash
-curl -X PUT https://tramlaptopviet.vn/api/sanity/seo \
+curl -X PUT https://www.tramlaptopviet.vn/api/sanity/seo \
   -H "Authorization: Bearer <SANITY_WEBHOOK_SECRET>"
 ```
 
@@ -95,7 +95,7 @@ Events are stored in Sanity as `_type: "webEvent"` documents. The dashboard read
 Open:
 
 ```text
-https://tramlaptopviet.vn/bao-cao-web
+https://www.tramlaptopviet.vn/bao-cao-web
 ```
 
 Sign in with `ANALYTICS_DASHBOARD_KEY`.

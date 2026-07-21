@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
+import { siteUrl } from "@/lib/site-url";
 import type { Product, SiteSettings } from "@/sanity/types";
 
 const categories = ["Laptop cũ", "Bàn phím laptop", "Màn hình laptop", "Pin laptop", "Sạc laptop", "Ổ cứng & RAM", "Phụ kiện", "Sửa main laptop"];
@@ -22,11 +23,11 @@ function productAction(product: Product): string {
 const localBusinessSchema = {
   "@context": "https://schema.org",
   "@type": ["LocalBusiness", "ComputerStore"],
-  "@id": "https://tramlaptopviet.vn/#business",
+  "@id": `${siteUrl}/#business`,
   name: "Trạm Laptop Việt",
-  url: "https://tramlaptopviet.vn/",
-  image: "https://tramlaptopviet.vn/tram-laptop-viet/storefront-main.png",
-  logo: "https://tramlaptopviet.vn/tram-laptop-viet/logo-round.jpg",
+  url: `${siteUrl}/`,
+  image: `${siteUrl}/tram-laptop-viet/storefront-main.png`,
+  logo: `${siteUrl}/tram-laptop-viet/logo-round.jpg`,
   telephone: "+84343323865",
   priceRange: "₫₫",
   description: "Trạm Laptop Việt chuyên sửa chữa, nâng cấp và bảo hành laptop, MacBook tại TP.HCM.",

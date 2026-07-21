@@ -1,10 +1,7 @@
 import { getNewsArticles } from "@/sanity/lib/content";
+import { siteUrl } from "@/lib/site-url";
 
 export const dynamic = "force-dynamic";
-
-const siteUrl = (
-  process.env.NEXT_PUBLIC_SITE_URL ?? "https://tramlaptopviet.vn"
-).replace(/\/+$/, "");
 
 export async function GET() {
   const articles = (await getNewsArticles()).filter((article) => !article.seoNoIndex);
