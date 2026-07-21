@@ -12,6 +12,9 @@ ANALYTICS_DASHBOARD_KEY=<password for /bao-cao-web>
 
 Do not prefix these variables with `NEXT_PUBLIC_`.
 
+There is no built-in dashboard password. If `ANALYTICS_DASHBOARD_KEY` is missing,
+the dashboard remains locked and reports that configuration is incomplete.
+
 ## 2. Automatic article URL and sitemap flow
 
 Create a Sanity webhook that fires when documents are created or updated.

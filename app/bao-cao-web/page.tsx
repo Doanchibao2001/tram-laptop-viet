@@ -130,7 +130,7 @@ export default async function AnalyticsDashboard({
 
   const since = sinceDays(30).toISOString();
   const events = await sanityServerClient.fetch<WebEvent[]>(
-    `*[_type == "webEvent" && occurredAt >= $since] | order(occurredAt desc)[0...10000]{eventName,path,sessionId,occurredAt,referrerHost,utmSource,utmMedium,utmCampaign,deviceType,label}`,
+    `*[_type == "webEvent" && occurredAt >= $since] | order(occurredAt desc)[0...50000]{eventName,path,sessionId,occurredAt,referrerHost,utmSource,utmMedium,utmCampaign,deviceType,label}`,
     { since },
     { cache: "no-store" },
   );

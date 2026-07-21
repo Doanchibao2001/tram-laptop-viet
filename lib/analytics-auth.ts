@@ -4,16 +4,13 @@ import { createHash, timingSafeEqual } from "node:crypto";
 
 export const ANALYTICS_COOKIE = "tlv_analytics_auth";
 
-const FALLBACK_DASHBOARD_PASSWORD_HASH =
-  "c83b400929c0c77f0d1fe42491eee916605e17339730b91db4a4b535079554fd";
-
 function digest(value: string): string {
   return createHash("sha256").update(value).digest("hex");
 }
 
 export function configuredDashboardSecret(): string | undefined {
   const value = process.env.ANALYTICS_DASHBOARD_KEY?.trim();
-  return value || FALLBACK_DASHBOARD_PASSWORD_HASH;
+  return value || undefined;
 }
 
 export function analyticsCookieValue(secret: string): string {
@@ -28,11 +25,7 @@ export function secureEqual(left: string, right: string): boolean {
 
 export function validDashboardPassword(candidate: string): boolean {
   const configuredSecret = process.env.ANALYTICS_DASHBOARD_KEY?.trim();
-  if (configuredSecret) {
-    return secureEqual(candidate, configuredSecret);
-  }
-
-  return secureEqual(digest(candidate), FALLBACK_DASHBOARD_PASSWORD_HASH);
+  return Boolean(configuredSecret && secureEqual(candidate, configuredSecret));
 }
 
 export function validAnalyticsCookie(candidate?: string): boolean {
