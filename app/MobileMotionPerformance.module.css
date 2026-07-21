@@ -1,0 +1,51 @@
+.root {
+  --motion-v3-fast: 110ms;
+  --motion-v3-normal: 190ms;
+  --motion-v3-slow: 560ms;
+}
+
+@media (max-width: 700px) {
+  .root :global(.hero-photo) {
+    transform: scale(1.02);
+    transition-duration: 520ms, 620ms;
+    will-change: auto;
+  }
+
+  .root :global(.hero-copy) {
+    transform: translateY(7px);
+    transition-duration: 380ms, 440ms;
+  }
+
+  .root :global(.product-card) {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+    will-change: auto !important;
+  }
+
+  .root :global(.service-grid > article),
+  .root :global(.location-grid > article),
+  .root :global(.trust-grid > div),
+  .root :global(.section-heading),
+  .root :global(.seo-grid > article),
+  .root :global(.faq-block),
+  .root :global(.consult-grid > div),
+  .root :global(.consult-grid > form),
+  .root :global(.process li) {
+    will-change: auto !important;
+    transition-duration: 280ms, 340ms !important;
+  }
+
+  .root :global(.nav-links) {
+    transition:
+      max-height 240ms cubic-bezier(.22, 1, .36, 1),
+      margin-top 170ms cubic-bezier(.2, .8, .2, 1),
+      opacity 140ms ease,
+      transform 210ms cubic-bezier(.22, 1, .36, 1) !important;
+  }
+
+  .root :global(.mobile-cta) {
+    -webkit-backdrop-filter: blur(10px) !important;
+    backdrop-filter: blur(10px) !important;
+  }
+}
