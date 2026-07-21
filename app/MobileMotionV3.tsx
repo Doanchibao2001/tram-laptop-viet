@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
+import performanceStyles from "./MobileMotionPerformance.module.css";
 import styles from "./MobileMotionV3.module.css";
 
 const SUBMIT_BUTTON_SELECTOR =
@@ -32,7 +33,7 @@ export default function MobileMotionV3() {
       "(prefers-reduced-motion: reduce)",
     ).matches;
 
-    root.classList.add(styles.root);
+    root.classList.add(styles.root, performanceStyles.root);
     revealSections.forEach((section) => section.classList.add(styles.revealSection));
 
     const revealHero = () => {
@@ -117,7 +118,7 @@ export default function MobileMotionV3() {
       processObserver?.disconnect();
       sectionObserver?.disconnect();
       document.removeEventListener("submit", handleSubmit, true);
-      root.classList.remove(styles.root, styles.loaded);
+      root.classList.remove(styles.root, styles.loaded, performanceStyles.root);
       processSection?.classList.remove(styles.processVisible);
       revealSections.forEach((section) =>
         section.classList.remove(styles.revealSection, styles.revealVisible),
