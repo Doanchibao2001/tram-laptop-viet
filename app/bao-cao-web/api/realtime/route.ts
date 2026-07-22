@@ -1,6 +1,4 @@
 import { NextResponse } from "next/server";
-import { cookies } from "next/headers";
-import { ANALYTICS_COOKIE, validAnalyticsCookie } from "@/lib/analytics-auth";
 import { sanityServerClient } from "@/sanity/lib/server-client";
 
 export const runtime = "nodejs";
@@ -30,11 +28,6 @@ function sourceLabel(event: RecentEvent): string {
 }
 
 export async function GET() {
-  const cookieStore = await cookies();
-  if (!validAnalyticsCookie(cookieStore.get(ANALYTICS_COOKIE)?.value)) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
-
   const since = new Date(Date.now() - ACTIVE_WINDOW_SECONDS * 1000).toISOString();
   const events = await sanityServerClient.fetch<RecentEvent[]>(
     `*[_type == "webEvent" && occurredAt >= $since] | order(occurredAt desc)[0...5000]{sessionId,path,occurredAt,referrerHost,utmSource,utmMedium,utmCampaign,deviceType,country,region,city}`,

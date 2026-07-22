@@ -1,10 +1,4 @@
 import type { Metadata } from "next";
-import { cookies } from "next/headers";
-import {
-  ANALYTICS_COOKIE,
-  configuredDashboardSecret,
-  validAnalyticsCookie,
-} from "@/lib/analytics-auth";
 import { hasSanityWriteToken, sanityServerClient } from "@/sanity/lib/server-client";
 import RealtimeVisitors from "./RealtimeVisitors";
 import AnalyticsInsights, { type HeartbeatBucket } from "./AnalyticsInsights";
@@ -142,33 +136,7 @@ const dashboardCss = `
 `;
 const dashboardLayoutCss = `${dashboardCss}.heartbeat-filters{grid-template-columns:140px 170px 1fr 1fr auto}@media(max-width:900px){.heartbeat-filters{grid-template-columns:1fr}}`;
 
-export default async function AnalyticsDashboard({
-  searchParams,
-}: {
-  searchParams: Promise<{ error?: string }>;
-}) {
-  const cookieStore = await cookies();
-  const authenticated = validAnalyticsCookie(cookieStore.get(ANALYTICS_COOKIE)?.value);
-  const { error } = await searchParams;
-
-  if (!authenticated) {
-    return (
-      <main className="analytics-page"><style>{dashboardLayoutCss}</style><div className="analytics-shell login-wrap"><section className="login-card">
-        <span>TRẠM LAPTOP VIỆT</span>
-        <h1>Báo cáo hiệu quả website</h1>
-        <p>Đăng nhập để xem lượt truy cập, nguồn khách và hành động chuyển đổi được ghi trực tiếp từ website.</p>
-        {error === "invalid" && <p className="login-error">Mật khẩu không đúng.</p>}
-        {error === "not-configured" && <p className="login-error">Chưa cấu hình ANALYTICS_DASHBOARD_KEY trên Vercel.</p>}
-        <form action="/api/analytics/login" method="post">
-          <label htmlFor="dashboard-password">Mật khẩu báo cáo</label>
-          <input id="dashboard-password" name="password" type="password" required autoComplete="current-password" />
-          <button type="submit">Mở báo cáo</button>
-        </form>
-        {!configuredDashboardSecret() && <p className="setup-note">Cần thêm biến môi trường <b>ANALYTICS_DASHBOARD_KEY</b> trước khi sử dụng.</p>}
-      </section></div></main>
-    );
-  }
-
+export default async function AnalyticsDashboard() {
   const since = sinceDays(30).toISOString();
   const events = await sanityServerClient.fetch<WebEvent[]>(
     `*[_type == "webEvent" && occurredAt >= $since] | order(occurredAt desc)[0...50000]{eventName,path,sessionId,visitorId,occurredAt,referrerHost,utmSource,utmMedium,utmCampaign,deviceType,label,country,region,city,ipHash}`,
