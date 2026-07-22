@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { fallbackSiteSettings } from "@/sanity/fallback";
 import type { SiteSettings } from "@/sanity/types";
@@ -13,7 +14,7 @@ export function NewsHeader({ siteSettings = fallbackSiteSettings }: NewsChromePr
       <div className="topbar"><div className="container topbar-inner"><span>Trạm Laptop Việt · Tin tức và kinh nghiệm laptop</span><a href={`tel:${hotline}`}>Hotline: <b>{hotlineDisplay}</b></a></div></div>
       <header className="news-site-header">
         <div className="container news-header-inner">
-          <Link className="logo tram-brand" href="/" aria-label="Trạm Laptop Việt trang chủ"><img className="tram-logo" src="/tram-laptop-viet/logo-round.jpg" alt="Logo Trạm Laptop Việt" /><span className="tram-wordmark"><b>TRẠM LAPTOP</b><strong>VIỆT</strong></span></Link>
+          <Link className="logo tram-brand" href="/" aria-label="Trạm Laptop Việt trang chủ"><Image className="tram-logo" src="/tram-laptop-viet/logo-round.jpg" alt="Logo Trạm Laptop Việt" width={68} height={68} /><span className="tram-wordmark"><b>TRẠM LAPTOP</b><strong>VIỆT</strong></span></Link>
           <nav aria-label="Điều hướng tin tức"><Link href="/">Trang chủ</Link><Link href="/#dich-vu">Dịch vụ</Link><Link href="/tin-tuc" aria-current="page">Tin tức</Link><Link href="/#cua-hang">Cửa hàng</Link></nav>
           <a className="news-header-call" href={`tel:${hotline}`}>☎ {hotlineDisplay}</a>
         </div>

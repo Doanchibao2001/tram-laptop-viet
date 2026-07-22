@@ -23,11 +23,13 @@ test("protects analytics before rendering and never serves a password form", asy
 });
 
 test("publishes one canonical host and excludes private routes from crawling", async () => {
-  const [siteUrl, robots, sitemap, layout] = await Promise.all([
+  const [siteUrl, robots, sitemap, layout, homepage, notFound] = await Promise.all([
     read("lib/site-url.ts"),
     read("app/robots.ts"),
     read("app/sitemap.ts"),
     read("app/layout.tsx"),
+    read("app/page.tsx"),
+    read("app/not-found.tsx"),
   ]);
 
   assert.match(siteUrl, /https:\/\/www\.tramlaptopviet\.vn/);
@@ -37,7 +39,12 @@ test("publishes one canonical host and excludes private routes from crawling", a
   assert.match(sitemap, /filter\(\(article\) => !article\.seoNoIndex\)/);
   assert.match(sitemap, /`\$\{siteUrl\}\/tin-tuc\/\$\{article\.slug\}`/);
   assert.match(layout, /metadataBase:\s*new URL\(siteUrl\)/);
-  assert.match(layout, /alternates:\s*\{ canonical:\s*"\/" \}/);
+  assert.doesNotMatch(layout, /getSiteSettings|getSiteFaviconUrl/);
+  assert.doesNotMatch(layout, /alternates:\s*\{ canonical:\s*"\/" \}/);
+  assert.match(homepage, /alternates:\s*\{ canonical:\s*"\/" \}/);
+  assert.match(homepage, /title:\s*\{ absolute:\s*title \}/);
+  assert.match(notFound, /index:\s*false/);
+  assert.match(notFound, /follow:\s*false/);
   assert.match(layout, /"max-image-preview":\s*"large"/);
 });
 
@@ -50,6 +57,8 @@ test("news pages define unique canonicals and structured data", async () => {
   assert.match(listing, /alternates:\s*\{ canonical:\s*"\/tin-tuc" \}/);
   assert.match(listing, /"@type":\s*"CollectionPage"/);
   assert.match(article, /canonical:\s*`\/tin-tuc\/\$\{article\.slug\}`/);
+  assert.match(article, /title:\s*\{ absolute:\s*title \}/);
+  assert.match(article, /rawTitle\.length \+ brandSuffix\.length > 60/);
   assert.match(article, /"@type":\s*"BlogPosting"/);
   assert.match(article, /"@type":\s*"BreadcrumbList"/);
 });

@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import { getNewsArticles, getSiteSettings } from "@/sanity/lib/content";
 import { siteUrl } from "@/lib/site-url";
@@ -18,6 +19,7 @@ export default async function NewsPage() {
     getNewsArticles(),
     getSiteSettings(),
   ]);
+  const indexableArticles = newsArticles.filter((article) => !article.seoNoIndex);
   const collectionSchema = {
     "@context": "https://schema.org",
     "@type": "CollectionPage",
@@ -26,7 +28,7 @@ export default async function NewsPage() {
     inLanguage: "vi-VN",
     mainEntity: {
       "@type": "ItemList",
-      itemListElement: newsArticles.map((article, index) => ({ "@type": "ListItem", position: index + 1, url: `${siteUrl}/tin-tuc/${article.slug}`, name: article.title })),
+      itemListElement: indexableArticles.map((article, index) => ({ "@type": "ListItem", position: index + 1, url: `${siteUrl}/tin-tuc/${article.slug}`, name: article.title })),
     },
   };
   return (
@@ -34,7 +36,7 @@ export default async function NewsPage() {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(collectionSchema).replace(/</g, "\\u003c") }} />
       <NewsHeader siteSettings={siteSettings} />
       <section className="news-listing-hero"><div className="container"><span>KIẾN THỨC TỪ KỸ THUẬT VIÊN</span><h1>Tin tức & kinh nghiệm laptop</h1><p>Hướng dẫn dễ hiểu để sử dụng, chăm sóc, sửa chữa và nâng cấp laptop đúng cách.</p></div></section>
-      <section className="section"><div className="container"><div className="news-grid news-listing-grid">{newsArticles.map((article) => <article className="news-card" key={article.slug}><Link className="news-card-image" href={`/tin-tuc/${article.slug}`}><img src={article.image} alt={article.imageAlt} /></Link><div><span>{article.category}</span><h2><Link href={`/tin-tuc/${article.slug}`}>{article.title}</Link></h2><p>{article.description}</p><div className="news-meta"><time dateTime={article.publishedAt}>{article.publishedLabel}</time><span>·</span><span>{article.readTime}</span></div><Link className="news-read-more" href={`/tin-tuc/${article.slug}`}>Đọc bài viết →</Link></div></article>)}</div></div></section>
+      <section className="section"><div className="container"><div className="news-grid news-listing-grid">{indexableArticles.map((article) => <article className="news-card" key={article.slug}><Link className="news-card-image" href={`/tin-tuc/${article.slug}`}><Image src={article.image} alt={article.imageAlt} width={800} height={450} sizes="(max-width: 700px) 100vw, 33vw" /></Link><div><span>{article.category}</span><h2><Link href={`/tin-tuc/${article.slug}`}>{article.title}</Link></h2><p>{article.description}</p><div className="news-meta"><time dateTime={article.publishedAt}>{article.publishedLabel}</time><span>·</span><span>{article.readTime}</span></div><Link className="news-read-more" href={`/tin-tuc/${article.slug}`}>Đọc bài viết →</Link></div></article>)}</div></div></section>
       <NewsFooter siteSettings={siteSettings} />
     </main>
   );

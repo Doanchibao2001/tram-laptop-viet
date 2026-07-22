@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import {
   PortableText,
@@ -75,9 +76,13 @@ function PortableImageFigure({
   if (!isPortableImage(value) || !value.asset) return null;
   return (
     <figure>
-      <img
+      <Image
         src={urlFor(value).width(1200).fit("max").auto("format").url()}
         alt={value.alt ?? ""}
+        width={1200}
+        height={800}
+        sizes="(max-width: 980px) 100vw, 675px"
+        style={{ width: "100%", height: "auto" }}
         loading="lazy"
       />
       {value.caption && <figcaption>{value.caption}</figcaption>}
@@ -122,12 +127,17 @@ const portableTextComponents: PortableTextComponents = {
 };
 
 export function createArticleMetadata(article: NewsArticle): Metadata {
-  const title = article.seoTitle ?? article.title;
+  const rawTitle = article.seoTitle ?? article.title;
+  const brandSuffix = " | Trạm Laptop Việt";
+  const title =
+    rawTitle.includes("Trạm Laptop Việt") || rawTitle.length + brandSuffix.length > 60
+      ? rawTitle
+      : `${rawTitle}${brandSuffix}`;
   const description = article.seoDescription ?? article.description;
   const image = article.seoImage ?? article.image;
   const imageAlt = article.seoImageAlt ?? article.imageAlt;
   return {
-    title,
+    title: { absolute: title },
     description,
     keywords: article.keywords,
     alternates: { canonical: `/tin-tuc/${article.slug}` },
@@ -206,7 +216,7 @@ export function NewsArticlePage({
       <div className="container article-breadcrumb"><Link href="/">Trang chủ</Link><span>›</span><Link href="/tin-tuc">Tin tức</Link><span>›</span><span>{article.category}</span></div>
       <article className="container article-shell">
         <header className="article-heading"><span>{article.category}</span><h1>{article.title}</h1><p>{article.description}</p><div><time dateTime={article.publishedAt}>{article.publishedLabel}</time><b>·</b><span>{article.readTime}</span><b>·</b><span>Biên tập: {article.authorName ?? "Trạm Laptop Việt"}</span></div></header>
-        <img className="article-cover" src={article.image} alt={article.imageAlt} />
+        <Image className="article-cover" src={article.image} alt={article.imageAlt} width={1600} height={900} priority sizes="(max-width: 980px) 100vw, 980px" />
         <div className="article-layout">
           <div className="article-content">
             {article.body?.length ? (
@@ -219,7 +229,7 @@ export function NewsArticlePage({
           <aside className="article-index"><strong>Mục lục bài viết</strong><ol>{indexItems.map((section) => <li key={section.id}><a href={`#${section.id}`}>{section.heading}</a></li>)}</ol></aside>
         </div>
       </article>
-      <section className="related-news"><div className="container"><div className="section-heading"><span>ĐỌC THÊM</span><h2>Bài viết liên quan</h2></div><div className="news-grid">{relatedArticles.map((item) => <article className="news-card" key={item.slug}><Link className="news-card-image" href={`/tin-tuc/${item.slug}`}><img src={item.image} alt={item.imageAlt} /></Link><div><span>{item.category}</span><h3><Link href={`/tin-tuc/${item.slug}`}>{item.title}</Link></h3><p>{item.description}</p><Link className="news-read-more" href={`/tin-tuc/${item.slug}`}>Đọc bài viết →</Link></div></article>)}</div></div></section>
+      <section className="related-news"><div className="container"><div className="section-heading"><span>ĐỌC THÊM</span><h2>Bài viết liên quan</h2></div><div className="news-grid">{relatedArticles.map((item) => <article className="news-card" key={item.slug}><Link className="news-card-image" href={`/tin-tuc/${item.slug}`}><Image src={item.image} alt={item.imageAlt} width={800} height={450} sizes="(max-width: 700px) 100vw, 410px" /></Link><div><span>{item.category}</span><h3><Link href={`/tin-tuc/${item.slug}`}>{item.title}</Link></h3><p>{item.description}</p><Link className="news-read-more" href={`/tin-tuc/${item.slug}`}>Đọc bài viết →</Link></div></article>)}</div></div></section>
       <NewsFooter siteSettings={siteSettings} />
     </main>
   );
