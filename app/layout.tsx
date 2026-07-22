@@ -1,9 +1,8 @@
 import type { Metadata, Viewport } from "next";
 import { Suspense } from "react";
-import { getSiteFaviconUrl } from "@/sanity/lib/site-metadata";
 import { siteUrl } from "@/lib/site-url";
+import { fallbackSiteSettings } from "@/sanity/fallback";
 import AnalyticsTracker from "./AnalyticsTracker";
-import { getSiteSettings } from "@/sanity/lib/content";
 import "./globals.css";
 import "./process-fix.css";
 import "./typography-fix.css";
@@ -13,64 +12,37 @@ import "./palette-soft.css";
 import "./content-responsive.css";
 
 const googleSiteVerification = process.env.GOOGLE_SITE_VERIFICATION;
-export async function generateMetadata(): Promise<Metadata> {
-  const [favicon, settings] = await Promise.all([getSiteFaviconUrl(), getSiteSettings()]);
-  const title = settings.seoTitle;
-  const description = settings.seoDescription;
-
-  return {
-    metadataBase: new URL(siteUrl),
-    title: {
-      default: title,
-      template: "%s | Trạm Laptop Việt",
-    },
-    description,
-    keywords: settings.seoKeywords,
-    applicationName: settings.siteName,
-    authors: [{ name: settings.siteName, url: siteUrl }],
-    creator: settings.siteName,
-    publisher: settings.siteName,
-    category: "Dịch vụ sửa chữa và nâng cấp laptop",
-    verification: googleSiteVerification ? { google: googleSiteVerification } : undefined,
-    alternates: { canonical: "/" },
-    icons: {
-      icon: [{ url: favicon, sizes: "any" }],
-      shortcut: [{ url: favicon }],
-      apple: [{ url: settings.logo, sizes: "180x180" }],
-    },
-    robots: {
-      index: !settings.seoNoIndex,
+export const metadata: Metadata = {
+  metadataBase: new URL(siteUrl),
+  title: {
+    default: fallbackSiteSettings.seoTitle,
+    template: "%s | Trạm Laptop Việt",
+  },
+  description: fallbackSiteSettings.seoDescription,
+  keywords: fallbackSiteSettings.seoKeywords,
+  applicationName: fallbackSiteSettings.siteName,
+  authors: [{ name: fallbackSiteSettings.siteName, url: siteUrl }],
+  creator: fallbackSiteSettings.siteName,
+  publisher: fallbackSiteSettings.siteName,
+  category: "Dịch vụ sửa chữa và nâng cấp laptop",
+  verification: googleSiteVerification ? { google: googleSiteVerification } : undefined,
+  icons: {
+    icon: [{ url: fallbackSiteSettings.logo, sizes: "any" }],
+    shortcut: [{ url: fallbackSiteSettings.logo }],
+    apple: [{ url: fallbackSiteSettings.logo, sizes: "180x180" }],
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
       follow: true,
-      googleBot: {
-        index: !settings.seoNoIndex,
-        follow: true,
-        "max-image-preview": "large",
-        "max-snippet": -1,
-        "max-video-preview": -1,
-      },
+      "max-image-preview": "large",
+      "max-snippet": -1,
+      "max-video-preview": -1,
     },
-    openGraph: {
-      type: "website",
-      locale: "vi_VN",
-      url: "/",
-      siteName: settings.siteName,
-      title,
-      description,
-      images: [{
-        url: settings.seoImage,
-        width: 1200,
-        height: 630,
-        alt: settings.seoImageAlt,
-      }],
-    },
-    twitter: {
-      card: "summary_large_image",
-      title,
-      description,
-      images: [settings.seoImage],
-    },
-  };
-}
+  },
+};
 
 export const viewport: Viewport = {
   width: "device-width",
