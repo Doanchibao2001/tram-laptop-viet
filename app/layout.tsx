@@ -10,6 +10,7 @@ import "./typography-fix.css";
 import "./modern-ui.css";
 import "./header-brand-fix.css";
 import "./palette-soft.css";
+import "./content-responsive.css";
 
 const googleSiteVerification = process.env.GOOGLE_SITE_VERIFICATION;
 export async function generateMetadata(): Promise<Metadata> {
