@@ -256,7 +256,7 @@ export default function HomeClient({
         </div>
       </section>
 
-      <section className="brand-showcase" aria-label="Giới thiệu Trạm Laptop Việt"><div className="container"><Image src="/tram-laptop-viet/brand-banner.jpg" alt="Trạm Laptop Việt - Sửa chữa, nâng cấp, bảo hành laptop" width={1600} height={900} sizes="100vw" /></div></section>
+      <section className="brand-showcase" aria-label="Giới thiệu Trạm Laptop Việt"><div className="container"><Image src="/tram-laptop-viet/brand-banner.jpg" alt="Trạm Laptop Việt - Sửa chữa, nâng cấp, bảo hành laptop" width={1600} height={900} sizes="(max-width: 700px) 100vw, 960px" /></div></section>
 
       <section className="trust-strip"><div className="container trust-grid"><div><b>✓ Không tự ý sửa</b><span>Chỉ làm khi khách đồng ý</span></div><div><b>✓ Báo đúng lỗi</b><span>Giải thích rõ phương án</span></div><div><b>✓ Linh kiện rõ ràng</b><span>Bảo hành ghi cụ thể</span></div><div><b>☎ Máy cần xử lý gấp?</b><span>{hotlineDisplay}</span></div></div></section>
 
