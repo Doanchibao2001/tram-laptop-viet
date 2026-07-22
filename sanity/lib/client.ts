@@ -6,7 +6,7 @@ export const client = createClient({
   dataset,
   apiVersion,
   perspective: "published",
-  // Read the published Content Lake directly so an editor's changes are not
-  // hidden behind the previous CDN snapshot.
-  useCdn: false,
+  // Public reads use Sanity's CDN. The webhook invalidates Next.js data when
+  // editors publish, while the short revalidation window is a safe fallback.
+  useCdn: true,
 });

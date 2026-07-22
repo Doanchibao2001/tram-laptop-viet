@@ -54,7 +54,8 @@ test("news pages define unique canonicals and structured data", async () => {
     read("app/tin-tuc/NewsArticlePage.tsx"),
   ]);
 
-  assert.match(listing, /alternates:\s*\{ canonical:\s*"\/tin-tuc" \}/);
+  assert.match(listing, /const canonical = page > 1 \? `\/tin-tuc\?page=\$\{page\}` : "\/tin-tuc"/);
+  assert.match(listing, /alternates:\s*\{ canonical \}/);
   assert.match(listing, /"@type":\s*"CollectionPage"/);
   assert.match(article, /canonical:\s*`\/tin-tuc\/\$\{article\.slug\}`/);
   assert.match(article, /title:\s*\{ absolute:\s*title \}/);

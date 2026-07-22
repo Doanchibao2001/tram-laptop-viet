@@ -9,14 +9,19 @@ import { client } from "./client";
 import { urlFor } from "./image";
 import {
   NEWS_ARTICLE_QUERY,
+  NEWS_ARTICLES_COUNT_QUERY,
+  NEWS_ARTICLES_PAGE_QUERY,
   NEWS_ARTICLES_QUERY,
   PRODUCTS_QUERY,
+  RELATED_NEWS_ARTICLES_QUERY,
   SITE_SETTINGS_QUERY,
 } from "./queries";
 
-// Published content is the source of truth. Avoid retaining build-time data in
-// Vercel when a Sanity webhook or environment secret is not configured yet.
-const fetchOptions = { cache: "no-store" } as const;
+// Keep public reads fast and inexpensive. A Sanity webhook invalidates this tag
+// after publishing; five minutes is the fallback if the webhook is unavailable.
+const fetchOptions = {
+  next: { revalidate: 300, tags: ["sanity-content"] as string[] },
+};
 
 type ImageSource = Parameters<typeof urlFor>[0];
 
@@ -476,6 +481,68 @@ export async function getNewsArticles(): Promise<NewsArticle[]> {
   } catch (error) {
     console.warn("Sanity news unavailable; using local fallback.", error);
     return fallbackNewsArticles;
+  }
+}
+
+export type NewsPageResult = {
+  articles: NewsArticle[];
+  page: number;
+  pageSize: number;
+  total: number;
+  totalPages: number;
+};
+
+export async function getNewsArticlesPage(
+  requestedPage = 1,
+  pageSize = 12,
+): Promise<NewsPageResult> {
+  const safePageSize = Math.min(Math.max(Math.trunc(pageSize), 1), 24);
+  const safePage = Math.max(Math.trunc(requestedPage), 1);
+
+  try {
+    const total = await client.fetch<number>(NEWS_ARTICLES_COUNT_QUERY, {}, fetchOptions);
+    const totalPages = Math.max(Math.ceil(total / safePageSize), 1);
+    const page = Math.min(safePage, totalPages);
+    const start = (page - 1) * safePageSize;
+    const records = await client.fetch<SanityNewsRecord[]>(
+      NEWS_ARTICLES_PAGE_QUERY,
+      { start, end: start + safePageSize },
+      fetchOptions,
+    );
+    return {
+      articles: records.map(mapNewsArticle).filter((article): article is NewsArticle => Boolean(article)),
+      page,
+      pageSize: safePageSize,
+      total,
+      totalPages,
+    };
+  } catch (error) {
+    console.warn("Sanity paginated news unavailable; using local fallback.", error);
+    const total = fallbackNewsArticles.length;
+    const totalPages = Math.max(Math.ceil(total / safePageSize), 1);
+    const page = Math.min(safePage, totalPages);
+    const start = (page - 1) * safePageSize;
+    return {
+      articles: fallbackNewsArticles.slice(start, start + safePageSize),
+      page,
+      pageSize: safePageSize,
+      total,
+      totalPages,
+    };
+  }
+}
+
+export async function getRelatedNewsArticles(slug: string): Promise<NewsArticle[]> {
+  try {
+    const records = await client.fetch<SanityNewsRecord[]>(
+      RELATED_NEWS_ARTICLES_QUERY,
+      { slug },
+      fetchOptions,
+    );
+    return records.map(mapNewsArticle).filter((article): article is NewsArticle => Boolean(article));
+  } catch (error) {
+    console.warn(`Related articles for "${slug}" unavailable; using fallback.`, error);
+    return fallbackNewsArticles.filter((item) => item.slug !== slug).slice(0, 2);
   }
 }
 

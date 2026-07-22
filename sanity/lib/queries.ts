@@ -92,6 +92,21 @@ const NEWS_PROJECTION = `
   }, [])
 `;
 
+const NEWS_LIST_PROJECTION = `
+  _id,
+  "slug": slug.current,
+  title,
+  "description": coalesce(excerpt, description),
+  "category": coalesce(category->title, "Tin tức"),
+  "publishedAt": coalesce(publishedAt, _createdAt),
+  "updatedAt": coalesce(updatedAt, _updatedAt, publishedAt, _createdAt),
+  authorName,
+  readTime,
+  "imageSource": coalesce(coverImage, mainImage, image),
+  "imageAlt": coalesce(coverImage.alt, mainImage.alt, image.alt, title),
+  "seoNoIndex": coalesce(seo.noIndex, false)
+`;
+
 const PUBLISHED_ARTICLE_FILTER = `
   _type in ["article", "post", "newsArticle"]
   && defined(slug.current)
@@ -100,12 +115,30 @@ const PUBLISHED_ARTICLE_FILTER = `
 export const NEWS_ARTICLES_QUERY = defineQuery(`
   *[${PUBLISHED_ARTICLE_FILTER}]
   | order(coalesce(publishedAt, _createdAt) desc) {
-    ${NEWS_PROJECTION}
+    ${NEWS_LIST_PROJECTION}
   }
+`);
+
+export const NEWS_ARTICLES_PAGE_QUERY = defineQuery(`
+  *[${PUBLISHED_ARTICLE_FILTER}]
+  | order(coalesce(publishedAt, _createdAt) desc)[$start...$end] {
+    ${NEWS_LIST_PROJECTION}
+  }
+`);
+
+export const NEWS_ARTICLES_COUNT_QUERY = defineQuery(`
+  count(*[${PUBLISHED_ARTICLE_FILTER}])
 `);
 
 export const NEWS_ARTICLE_QUERY = defineQuery(`
   *[${PUBLISHED_ARTICLE_FILTER} && slug.current == $slug][0] {
     ${NEWS_PROJECTION}
+  }
+`);
+
+export const RELATED_NEWS_ARTICLES_QUERY = defineQuery(`
+  *[${PUBLISHED_ARTICLE_FILTER} && slug.current != $slug]
+  | order(coalesce(publishedAt, _createdAt) desc)[0...2] {
+    ${NEWS_LIST_PROJECTION}
   }
 `);
