@@ -1,4 +1,4 @@
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 import { NextRequest, NextResponse } from "next/server";
 import { buildSeoSlug, shortDocumentSuffix } from "@/lib/seo-slug";
 import { hasSanityWriteToken, sanityServerClient } from "@/sanity/lib/server-client";
@@ -57,17 +57,21 @@ async function writeSlug(documentId: string, title: string, keywords: string[]) 
     .set({ slug: { _type: "slug", current: slug } })
     .commit({ autoGenerateArrayKeys: true });
 
-  revalidatePath("/sitemap.xml");
-  revalidatePath("/tin-tuc");
-  revalidatePath(`/tin-tuc/${slug}`);
+  refreshArticlePaths(slug);
   return slug;
+}
+
+function refreshArticlePaths(slug?: string) {
+  revalidateTag("sanity-content", "max");
+  revalidatePath("/");
+  revalidatePath("/sitemap.xml");
+  revalidatePath("/llms.txt");
+  revalidatePath("/tin-tuc");
+  if (slug) revalidatePath(`/tin-tuc/${slug}`);
 }
 
 export async function POST(request: NextRequest) {
   if (!authorized(request)) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  if (!hasSanityWriteToken()) {
-    return NextResponse.json({ error: "SANITY_WRITE_TOKEN is not configured" }, { status: 503 });
-  }
 
   const payload = (await request.json()) as ArticleWebhookPayload;
   const id = text(payload._id);
@@ -78,7 +82,14 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ ok: true, ignored: "not_an_article" });
   }
   if (id.startsWith("drafts.")) return NextResponse.json({ ok: true, ignored: "draft" });
-  if (currentSlug(payload.slug)) return NextResponse.json({ ok: true, ignored: "slug_exists" });
+  const existingSlug = currentSlug(payload.slug);
+  if (existingSlug) {
+    refreshArticlePaths(existingSlug);
+    return NextResponse.json({ ok: true, revalidated: true, slug: existingSlug });
+  }
+  if (!hasSanityWriteToken()) {
+    return NextResponse.json({ error: "SANITY_WRITE_TOKEN is not configured" }, { status: 503 });
+  }
   if (!title) return NextResponse.json({ error: "Article title is required" }, { status: 400 });
 
   const slug = await writeSlug(id, title, keywordList(payload.keywords));

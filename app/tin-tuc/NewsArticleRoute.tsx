@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import {
   getNewsArticleBySlug,
-  getNewsArticles,
+  getRelatedNewsArticles,
   getSiteSettings,
 } from "@/sanity/lib/content";
 import { createArticleMetadata, NewsArticlePage } from "./NewsArticlePage";
@@ -13,17 +13,13 @@ export async function metadataForArticle(slug: string): Promise<Metadata> {
 }
 
 export async function renderArticle(slug: string) {
-  const [article, articles, siteSettings] = await Promise.all([
+  const [article, relatedArticles, siteSettings] = await Promise.all([
     getNewsArticleBySlug(slug),
-    getNewsArticles(),
+    getRelatedNewsArticles(slug),
     getSiteSettings(),
   ]);
 
   if (!article) notFound();
-
-  const relatedArticles = articles
-    .filter((item) => item.slug !== article.slug)
-    .slice(0, 2);
 
   return (
     <NewsArticlePage
