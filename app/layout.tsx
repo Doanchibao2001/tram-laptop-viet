@@ -3,19 +3,20 @@ import { Suspense } from "react";
 import { getSiteFaviconUrl } from "@/sanity/lib/site-metadata";
 import { siteUrl } from "@/lib/site-url";
 import AnalyticsTracker from "./AnalyticsTracker";
+import { getSiteSettings } from "@/sanity/lib/content";
 import "./globals.css";
 import "./process-fix.css";
 import "./typography-fix.css";
 import "./modern-ui.css";
 import "./header-brand-fix.css";
 import "./palette-soft.css";
+import "./content-responsive.css";
 
 const googleSiteVerification = process.env.GOOGLE_SITE_VERIFICATION;
-const title = "Sửa laptop & MacBook uy tín tại TP.HCM | Trạm Laptop Việt";
-const description = "Trạm Laptop Việt sửa chữa, nâng cấp và bảo hành laptop, MacBook tại TP.HCM: kiểm tra đúng lỗi, báo giá trước khi sửa và bảo hành minh bạch.";
-
 export async function generateMetadata(): Promise<Metadata> {
-  const favicon = await getSiteFaviconUrl();
+  const [favicon, settings] = await Promise.all([getSiteFaviconUrl(), getSiteSettings()]);
+  const title = settings.seoTitle;
+  const description = settings.seoDescription;
 
   return {
     metadataBase: new URL(siteUrl),
@@ -24,33 +25,24 @@ export async function generateMetadata(): Promise<Metadata> {
       template: "%s | Trạm Laptop Việt",
     },
     description,
-    keywords: [
-      "sửa laptop",
-      "sửa MacBook",
-      "sửa laptop TP.HCM",
-      "nâng cấp laptop",
-      "thay bàn phím laptop",
-      "thay màn hình laptop",
-      "thay pin laptop",
-      "sửa main laptop",
-    ],
-    applicationName: "Trạm Laptop Việt",
-    authors: [{ name: "Trạm Laptop Việt", url: siteUrl }],
-    creator: "Trạm Laptop Việt",
-    publisher: "Trạm Laptop Việt",
+    keywords: settings.seoKeywords,
+    applicationName: settings.siteName,
+    authors: [{ name: settings.siteName, url: siteUrl }],
+    creator: settings.siteName,
+    publisher: settings.siteName,
     category: "Dịch vụ sửa chữa và nâng cấp laptop",
     verification: googleSiteVerification ? { google: googleSiteVerification } : undefined,
     alternates: { canonical: "/" },
     icons: {
       icon: [{ url: favicon, sizes: "any" }],
       shortcut: [{ url: favicon }],
-      apple: [{ url: "/tram-laptop-viet/logo-round.jpg", sizes: "180x180" }],
+      apple: [{ url: settings.logo, sizes: "180x180" }],
     },
     robots: {
-      index: true,
+      index: !settings.seoNoIndex,
       follow: true,
       googleBot: {
-        index: true,
+        index: !settings.seoNoIndex,
         follow: true,
         "max-image-preview": "large",
         "max-snippet": -1,
@@ -61,21 +53,21 @@ export async function generateMetadata(): Promise<Metadata> {
       type: "website",
       locale: "vi_VN",
       url: "/",
-      siteName: "Trạm Laptop Việt",
+      siteName: settings.siteName,
       title,
       description,
       images: [{
-        url: "/tram-laptop-viet/brand-banner.jpg",
-        width: 1280,
-        height: 720,
-        alt: "Trạm Laptop Việt - Sửa chữa, nâng cấp và bảo hành laptop",
+        url: settings.seoImage,
+        width: 1200,
+        height: 630,
+        alt: settings.seoImageAlt,
       }],
     },
     twitter: {
       card: "summary_large_image",
       title,
       description,
-      images: ["/tram-laptop-viet/brand-banner.jpg"],
+      images: [settings.seoImage],
     },
   };
 }

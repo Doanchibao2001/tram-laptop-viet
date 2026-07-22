@@ -12,6 +12,9 @@ export const fallbackProducts: Product[] = [
 ];
 
 export const fallbackSiteSettings: SiteSettings = {
+  siteName: "Trạm Laptop Việt",
+  logo: "/tram-laptop-viet/logo-round.jpg",
+  logoAlt: "Logo Trạm Laptop Việt",
   hotline: "0343323865",
   hotlineDisplay: "0343.323.865",
   hotlineE164: "+84343323865",
@@ -26,6 +29,30 @@ export const fallbackSiteSettings: SiteSettings = {
   socialProof: "+3.000 khách hàng tại TP.HCM đã tin tưởng giao máy",
   primaryCtaLabel: "Kiểm tra lỗi miễn phí",
   secondaryCtaLabel: "Gửi ảnh lỗi qua Zalo",
+  services: [
+    { title: "Thay bàn phím", description: "Kiểm tra đúng mã, báo thời gian và bảo hành trước khi thay." },
+    { title: "Thay màn hình", description: "Kiểm tra miễn phí, tư vấn lựa chọn màn hình phù hợp." },
+    { title: "Thay pin · sạc", description: "Kiểm tra dung lượng pin, nguồn sạc và độ tương thích." },
+    { title: "Sửa mainboard", description: "Chẩn đoán chuyên sâu, báo đúng lỗi trước khi sửa chữa." },
+  ],
+  processSteps: [
+    { title: "Tiếp nhận & kiểm tra", description: "Kỹ thuật viên lắng nghe và kiểm tra tổng thể." },
+    { title: "Báo lỗi & báo giá", description: "Tư vấn phương án, không phát sinh ngoài báo giá." },
+    { title: "Sửa chữa", description: "Chỉ tiến hành sau khi khách hàng đồng ý phương án." },
+    { title: "Kiểm tra & bảo hành", description: "Test kỹ, bàn giao và ghi rõ thời hạn bảo hành." },
+  ],
+  homepageSeoHeading: "Sửa laptop, MacBook tại TP.HCM",
+  homepageSeoParagraphs: [
+    "Trạm Laptop Việt tiếp nhận kiểm tra, vệ sinh, sửa chữa và nâng cấp laptop tại TP.HCM. Kỹ thuật viên chẩn đoán đúng lỗi, báo giá trước khi làm và để khách hàng nắm rõ phương án sửa chữa.",
+    "Các dịch vụ phổ biến gồm thay bàn phím laptop, thay màn hình, pin, sạc, ổ cứng SSD, RAM và sửa mainboard. Linh kiện có nguồn gốc rõ ràng, thời hạn bảo hành được ghi cụ thể khi bàn giao máy.",
+  ],
+  faqs: [
+    { question: "Kiểm tra laptop có mất phí không?", answer: "Trạm Laptop Việt kiểm tra và tư vấn phương án trước khi sửa. Chi phí chỉ được thực hiện sau khi khách hàng đồng ý." },
+    { question: "Sửa laptop mất bao lâu?", answer: "Thời gian phụ thuộc tình trạng máy và linh kiện. Kỹ thuật viên sẽ báo thời gian dự kiến sau khi kiểm tra." },
+    { question: "Dịch vụ có bảo hành không?", answer: "Có. Thời gian bảo hành phụ thuộc dịch vụ và linh kiện, được ghi rõ khi bàn giao." },
+  ],
+  consultHeading: "Mô tả tình trạng máy, Trạm Laptop Việt gọi lại ngay.",
+  consultDescription: "Để lại thông tin để kỹ thuật viên liên hệ và tư vấn tình trạng máy.",
   popupHeadline: "Chưa biết máy hỏng gì?",
   popupDescription:
     "Gửi ảnh, video hoặc mô tả dấu hiệu để kỹ thuật viên xem sơ bộ. Bạn biết lỗi và chi phí dự kiến trước khi quyết định.",
@@ -41,4 +68,10 @@ export const fallbackSiteSettings: SiteSettings = {
   ],
   footerDescription:
     "Trạm sửa chữa, nâng cấp và bảo hành laptop chuyên nghiệp tại TP.HCM.",
+  seoTitle: "Sửa laptop & MacBook uy tín tại TP.HCM | Trạm Laptop Việt",
+  seoDescription: "Trạm Laptop Việt sửa chữa, nâng cấp và bảo hành laptop, MacBook tại TP.HCM: kiểm tra đúng lỗi, báo giá trước khi sửa và bảo hành minh bạch.",
+  seoImage: "/tram-laptop-viet/brand-banner.jpg",
+  seoImageAlt: "Trạm Laptop Việt - Sửa chữa, nâng cấp và bảo hành laptop",
+  seoNoIndex: false,
+  seoKeywords: ["sửa laptop", "sửa MacBook", "sửa laptop TP.HCM", "nâng cấp laptop", "sửa main laptop"],
 };

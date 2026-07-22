@@ -1,0 +1,152 @@
+/* Responsive guardrails for content managed in Sanity. */
+.hero-copy,
+.service-grid article,
+.process li span,
+.seo-grid > *,
+.consult-grid > *,
+.footer-grid > * {
+  min-width: 0;
+}
+
+.hero h1 {
+  font-size: clamp(2.55rem, 4.1vw, 3.3rem);
+  overflow-wrap: anywhere;
+  text-wrap: balance;
+}
+
+.hero-copy > p,
+.section-heading p,
+.service-grid p,
+.process small,
+.seo-grid p,
+.faq-block p,
+.consult p,
+.footer-grid p {
+  overflow-wrap: anywhere;
+}
+
+.hero-photo,
+.brand-showcase img,
+.product-image img,
+.tram-logo {
+  max-width: 100%;
+  object-position: center;
+}
+
+.service-grid {
+  grid-template-columns: repeat(auto-fit, minmax(min(230px, 100%), 1fr));
+}
+
+.service-grid article {
+  display: flex;
+  min-height: 230px;
+  flex-direction: column;
+}
+
+.service-grid article .service-check {
+  margin-top: auto;
+}
+
+.service-grid h3,
+.process strong,
+.location-grid h3,
+.faq-block summary {
+  overflow-wrap: anywhere;
+  text-wrap: balance;
+}
+
+.process ol {
+  grid-template-columns: repeat(auto-fit, minmax(min(230px, 100%), 1fr));
+}
+
+.seo-grid h2,
+.consult h2,
+.section-heading h2 {
+  font-size: clamp(1.85rem, 3.2vw, 2.45rem);
+  overflow-wrap: anywhere;
+  text-wrap: balance;
+}
+
+.consult input,
+.consult select,
+.consult button {
+  min-width: 0;
+  width: 100%;
+}
+
+@media (min-width: 701px) and (max-width: 1100px) {
+  .hero h1 {
+    font-size: clamp(2.35rem, 5vw, 3rem);
+  }
+
+  .process-grid,
+  .consult-grid,
+  .seo-grid {
+    gap: clamp(28px, 5vw, 55px);
+  }
+}
+
+@media (max-width: 700px) {
+  .hero h1 {
+    font-size: clamp(2.05rem, 10.5vw, 2.75rem);
+    line-height: 1;
+  }
+
+  .hero-copy > p {
+    font-size: clamp(0.78rem, 3.5vw, 0.9rem);
+  }
+
+  .hero-actions,
+  .hero-actions .btn {
+    width: 100%;
+  }
+
+  .hero-photo {
+    width: 100%;
+    height: clamp(210px, 62vw, 285px);
+    object-fit: cover;
+  }
+
+  .service-grid,
+  .process ol,
+  .seo-grid,
+  .consult-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .service-grid article {
+    min-height: 0;
+  }
+
+  .seo-grid article,
+  .faq-block,
+  .consult-grid > div,
+  .consult-grid > form {
+    width: 100%;
+  }
+
+  .seo-grid h2,
+  .consult h2,
+  .section-heading h2 {
+    font-size: clamp(1.65rem, 8vw, 2rem);
+  }
+
+  .faq-block summary {
+    padding-right: 28px;
+    line-height: 1.45;
+  }
+}
+
+@media (max-width: 360px) {
+  .hero h1 {
+    font-size: clamp(1.85rem, 10vw, 2.2rem);
+  }
+
+  .hero-card,
+  .service-grid article,
+  .seo-grid article,
+  .faq-block {
+    padding-left: 18px;
+    padding-right: 18px;
+  }
+}

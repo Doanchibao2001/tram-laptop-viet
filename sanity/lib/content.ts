@@ -34,6 +34,9 @@ type SanityProductRecord = {
 };
 
 type SanitySiteSettingsRecord = {
+  siteName?: unknown;
+  logoSource?: ImageSource | null;
+  logoAlt?: unknown;
   hotline?: unknown;
   hotlineDisplay?: unknown;
   zaloUrl?: unknown;
@@ -46,12 +49,25 @@ type SanitySiteSettingsRecord = {
   socialProof?: unknown;
   primaryCtaLabel?: unknown;
   secondaryCtaLabel?: unknown;
+  services?: unknown;
+  processSteps?: unknown;
+  homepageSeoHeading?: unknown;
+  homepageSeoParagraphs?: unknown;
+  faqs?: unknown;
+  consultHeading?: unknown;
+  consultDescription?: unknown;
   popupHeadline?: unknown;
   popupDescription?: unknown;
   popupPrimaryLabel?: unknown;
   popupSecondaryLabel?: unknown;
   addresses?: unknown;
   footerDescription?: unknown;
+  seoTitle?: unknown;
+  seoDescription?: unknown;
+  seoImageSource?: ImageSource | null;
+  seoImageAlt?: unknown;
+  seoNoIndex?: unknown;
+  seoKeywords?: unknown;
 } | null;
 
 type SanityStoreLocation = {
@@ -92,6 +108,34 @@ type SanityNewsRecord = {
 
 function nonEmptyString(value: unknown): string | undefined {
   return typeof value === "string" && value.trim() ? value.trim() : undefined;
+}
+
+function stringArray(value: unknown): string[] {
+  return Array.isArray(value)
+    ? value.map(nonEmptyString).filter((item): item is string => Boolean(item))
+    : [];
+}
+
+function titledItems(value: unknown): { title: string; description: string }[] {
+  if (!Array.isArray(value)) return [];
+  return value.flatMap((item) => {
+    if (!item || typeof item !== "object") return [];
+    const record = item as { title?: unknown; description?: unknown };
+    const title = nonEmptyString(record.title);
+    const description = nonEmptyString(record.description);
+    return title && description ? [{ title, description }] : [];
+  });
+}
+
+function faqItems(value: unknown): { question: string; answer: string }[] {
+  if (!Array.isArray(value)) return [];
+  return value.flatMap((item) => {
+    if (!item || typeof item !== "object") return [];
+    const record = item as { question?: unknown; answer?: unknown };
+    const question = nonEmptyString(record.question);
+    const answer = nonEmptyString(record.answer);
+    return question && answer ? [{ question, answer }] : [];
+  });
 }
 
 function normalizeVietnamPhone(value: unknown):
@@ -345,7 +389,15 @@ export async function getSiteSettings(): Promise<SiteSettings> {
           .map((address) => mapStoreLocation(address as SanityStoreLocation))
           .filter((address): address is StoreLocation => Boolean(address))
       : [];
+    const services = titledItems(record.services);
+    const processSteps = titledItems(record.processSteps);
+    const homepageSeoParagraphs = stringArray(record.homepageSeoParagraphs);
+    const faqs = faqItems(record.faqs);
+    const seoKeywords = stringArray(record.seoKeywords);
     return {
+      siteName: nonEmptyString(record.siteName) ?? fallbackSiteSettings.siteName,
+      logo: imageUrl(record.logoSource, 360) ?? fallbackSiteSettings.logo,
+      logoAlt: nonEmptyString(record.logoAlt) ?? fallbackSiteSettings.logoAlt,
       hotline: phone.local,
       hotlineDisplay: formatPhone(phone.local),
       hotlineE164: phone.e164,
@@ -374,6 +426,13 @@ export async function getSiteSettings(): Promise<SiteSettings> {
       secondaryCtaLabel:
         nonEmptyString(record.secondaryCtaLabel) ??
         fallbackSiteSettings.secondaryCtaLabel,
+      services: services.length ? services : fallbackSiteSettings.services,
+      processSteps: processSteps.length ? processSteps : fallbackSiteSettings.processSteps,
+      homepageSeoHeading: nonEmptyString(record.homepageSeoHeading) ?? fallbackSiteSettings.homepageSeoHeading,
+      homepageSeoParagraphs: homepageSeoParagraphs.length ? homepageSeoParagraphs : fallbackSiteSettings.homepageSeoParagraphs,
+      faqs: faqs.length ? faqs : fallbackSiteSettings.faqs,
+      consultHeading: nonEmptyString(record.consultHeading) ?? fallbackSiteSettings.consultHeading,
+      consultDescription: nonEmptyString(record.consultDescription) ?? fallbackSiteSettings.consultDescription,
       popupHeadline:
         nonEmptyString(record.popupHeadline) ??
         fallbackSiteSettings.popupHeadline,
@@ -390,6 +449,12 @@ export async function getSiteSettings(): Promise<SiteSettings> {
       footerDescription:
         nonEmptyString(record.footerDescription) ??
         fallbackSiteSettings.footerDescription,
+      seoTitle: nonEmptyString(record.seoTitle) ?? fallbackSiteSettings.seoTitle,
+      seoDescription: nonEmptyString(record.seoDescription) ?? fallbackSiteSettings.seoDescription,
+      seoImage: imageUrl(record.seoImageSource, 1200, 630) ?? fallbackSiteSettings.seoImage,
+      seoImageAlt: nonEmptyString(record.seoImageAlt) ?? fallbackSiteSettings.seoImageAlt,
+      seoNoIndex: record.seoNoIndex === true,
+      seoKeywords: seoKeywords.length ? seoKeywords : fallbackSiteSettings.seoKeywords,
     };
   } catch (error) {
     console.warn("Sanity site settings unavailable; using local fallback.", error);
