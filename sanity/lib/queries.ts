@@ -23,6 +23,9 @@ export const PRODUCTS_QUERY = defineQuery(`
 
 export const SITE_SETTINGS_QUERY = defineQuery(`
   *[_id == "siteSettings" && _type == "siteSettings"][0] {
+    siteName,
+    "logoSource": logo,
+    "logoAlt": coalesce(logo.alt, siteName),
     hotline,
     hotlineDisplay,
     zaloUrl,
@@ -35,6 +38,13 @@ export const SITE_SETTINGS_QUERY = defineQuery(`
     socialProof,
     primaryCtaLabel,
     secondaryCtaLabel,
+    services[] { title, description },
+    processSteps[] { title, description },
+    homepageSeoHeading,
+    homepageSeoParagraphs,
+    faqs[] { question, answer },
+    consultHeading,
+    consultDescription,
     popupHeadline,
     popupDescription,
     popupPrimaryLabel,
@@ -45,7 +55,13 @@ export const SITE_SETTINGS_QUERY = defineQuery(`
       mapUrl,
       hours
     },
-    footerDescription
+    footerDescription,
+    "seoTitle": defaultSeo.title,
+    "seoDescription": defaultSeo.description,
+    "seoImageSource": defaultSeo.image,
+    "seoImageAlt": coalesce(defaultSeo.image.alt, defaultSeo.title, siteName),
+    "seoNoIndex": coalesce(defaultSeo.noIndex, false),
+    seoKeywords
   }
 `);
 
