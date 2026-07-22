@@ -109,6 +109,16 @@ export default function HomeClient({
       streetAddress: addresses[0]?.address ?? localBusinessSchema.address.streetAddress,
     },
   };
+  const websiteSchema = {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "@id": `${siteUrl}/#website`,
+    name: "Trạm Laptop Việt",
+    alternateName: ["Trạm Laptop", "TLV"],
+    url: `${siteUrl}/`,
+    publisher: { "@id": `${siteUrl}/#business` },
+    inLanguage: "vi-VN",
+  };
   const faqSchema = {
     "@context": "https://schema.org",
     "@type": "FAQPage",
@@ -200,6 +210,7 @@ export default function HomeClient({
 
   return (
     <main>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteSchema).replace(/</g, "\\u003c") }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(currentLocalBusinessSchema).replace(/</g, "\\u003c") }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema).replace(/</g, "\\u003c") }} />
       <div className="topbar"><div className="container topbar-inner"><span>Trạm Laptop Việt · Sửa chữa · Nâng cấp · Bảo hành</span><a href={`tel:${hotline}`}>Hotline: <b>{hotlineDisplay}</b></a></div></div>

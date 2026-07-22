@@ -63,6 +63,15 @@ test("news pages define unique canonicals and structured data", async () => {
   assert.match(article, /"@type":\s*"BreadcrumbList"/);
 });
 
+test("homepage declares the preferred Google site name", async () => {
+  const homepage = await read("app/HomeClient.tsx");
+
+  assert.match(homepage, /"@type":\s*"WebSite"/);
+  assert.match(homepage, /name:\s*"Trạm Laptop Việt"/);
+  assert.match(homepage, /alternateName:\s*\["Trạm Laptop", "TLV"\]/);
+  assert.match(homepage, /"@id":\s*`\$\{siteUrl\}\/\#website`/);
+});
+
 test("prioritizes and responsively sizes the homepage LCP image", async () => {
   const [homepage, nextConfig] = await Promise.all([
     read("app/HomeClient.tsx"),
