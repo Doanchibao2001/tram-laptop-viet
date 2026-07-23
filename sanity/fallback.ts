@@ -41,9 +41,9 @@ export const fallbackSiteSettings: SiteSettings = {
     { title: "Sửa chữa", description: "Chỉ tiến hành sau khi khách hàng đồng ý phương án." },
     { title: "Kiểm tra & bảo hành", description: "Test kỹ, bàn giao và ghi rõ thời hạn bảo hành." },
   ],
-  homepageSeoHeading: "Sửa laptop, MacBook tại TP.HCM",
+  homepageSeoHeading: "Sửa laptop, MacBook tại Gò Vấp",
   homepageSeoParagraphs: [
-    "Trạm Laptop Việt tiếp nhận kiểm tra, vệ sinh, sửa chữa và nâng cấp laptop tại TP.HCM. Kỹ thuật viên chẩn đoán đúng lỗi, báo giá trước khi làm và để khách hàng nắm rõ phương án sửa chữa.",
+    "Trạm Laptop Việt tiếp nhận kiểm tra, vệ sinh, sửa chữa và nâng cấp laptop tại 656 Phạm Văn Chiêu, An Hội Đông, Gò Vấp. Kỹ thuật viên chẩn đoán đúng lỗi, báo giá trước khi làm và chỉ sửa khi khách hàng đồng ý.",
     "Các dịch vụ phổ biến gồm thay bàn phím laptop, thay màn hình, pin, sạc, ổ cứng SSD, RAM và sửa mainboard. Linh kiện có nguồn gốc rõ ràng, thời hạn bảo hành được ghi cụ thể khi bàn giao máy.",
   ],
   faqs: [
@@ -59,19 +59,14 @@ export const fallbackSiteSettings: SiteSettings = {
   popupPrimaryLabel: "Gửi ảnh lỗi để kiểm tra nhanh",
   popupSecondaryLabel: "Máy cần gấp? Gọi ngay",
   addresses: [
-    { name: "Quận 10", address: "642 đường 3/2, Phường 14", hours: "Thứ 2–7 · 8:30–18:30" },
-    { name: "Quận 3", address: "514 Cách Mạng Tháng 8, P.11", hours: "Thứ 2–7 · 8:30–18:30" },
-    { name: "Phú Nhuận", address: "167A Đào Duy Anh, P.9", hours: "Thứ 2–7 · 8:30–18:30" },
-    { name: "Bình Thạnh", address: "203A Lê Quang Định, P.7", hours: "Thứ 2–7 · 8:30–18:30" },
-    { name: "Gò Vấp", address: "457 Lê Văn Thọ, P.9", hours: "Thứ 2–7 · 8:30–18:30" },
-    { name: "Thủ Đức", address: "678 Kha Vạn Cân, Linh Đông", hours: "Thứ 2–7 · 8:30–18:30" },
+    { name: "Gò Vấp", address: "656 Phạm Văn Chiêu, An Hội Đông, Gò Vấp", hours: "Thứ 2–7 · 8:30–18:30" },
   ],
   footerDescription:
-    "Trạm sửa chữa, nâng cấp và bảo hành laptop chuyên nghiệp tại TP.HCM.",
-  seoTitle: "Sửa laptop & MacBook uy tín tại TP.HCM | Trạm Laptop Việt",
-  seoDescription: "Trạm Laptop Việt sửa chữa, nâng cấp và bảo hành laptop, MacBook tại TP.HCM: kiểm tra đúng lỗi, báo giá trước khi sửa và bảo hành minh bạch.",
+    "Trạm sửa chữa, nâng cấp và bảo hành laptop tại 656 Phạm Văn Chiêu, An Hội Đông, Gò Vấp.",
+  seoTitle: "Sửa laptop, MacBook tại Gò Vấp | Trạm Laptop Việt",
+  seoDescription: "Trạm Laptop Việt sửa laptop, MacBook tại 656 Phạm Văn Chiêu, An Hội Đông, Gò Vấp. Kiểm tra đúng lỗi, báo giá trước, chỉ sửa khi khách đồng ý.",
   seoImage: "/tram-laptop-viet/brand-banner.jpg",
   seoImageAlt: "Trạm Laptop Việt - Sửa chữa, nâng cấp và bảo hành laptop",
   seoNoIndex: false,
-  seoKeywords: ["sửa laptop", "sửa MacBook", "sửa laptop TP.HCM", "nâng cấp laptop", "sửa main laptop"],
+  seoKeywords: ["sửa laptop Gò Vấp", "sửa MacBook Gò Vấp", "sửa laptop Phạm Văn Chiêu", "nâng cấp laptop", "sửa main laptop"],
 };
